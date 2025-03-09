@@ -177,12 +177,53 @@ return drawTM('#tnf-root', {'0A': '1RB'});
 
 {#draw-exec1}
 ```slip-script
-return exec1 = execTM('#exec1', {'0A': '1RB'});
+return exec1 = execTM('#exec1', {'0A': '1RB'}, '#tnf-root');
 ```
 
 {pause exec-at-unpause}
 ```slip-script
 return exec1.executeStep();
+```
+
+{pause}
+
+Options for the next transition: $\{\mathtt 0, \mathtt 1\} \times \{\mathtt L, \mathtt R\} \times \{\mathtt A, \mathtt B, \mathtt C\}$
+
+{#tnf-row1 .tnf-row}
+
+{pause exec-at-unpause up-at-unpause=tnf-root}
+```slip-script
+const tms = `
+1RB---_0LA---_------_------_------,halt
+1RB---_1LA---_------_------_------,halt
+1RB---_0RA---_------_------_------,nonhalt
+1RB---_1RA---_------_------_------,nonhalt
+1RB---_0LB---_------_------_------,halt
+1RB---_1LB---_------_------_------,halt
+1RB---_0RB---_------_------_------,nonhalt
+1RB---_1RB---_------_------_------,nonhalt
+1RB---_0LC---_------_------_------,halt
+1RB---_1LC---_------_------_------,halt
+1RB---_0RC---_------_------_------,halt
+1RB---_1RC---_------_------_------,halt
+`;
+
+async function doit() {
+    for (const line of tms.trim().split('\n')) {
+        const [tm, status] = line.split(',');
+        drawTM('#tnf-row1', fromStandard(tm));
+        await sleep(100);
+    }
+}
+
+doit();
+
+return {
+    undo: () => {
+        const row = document.querySelector('#tnf-row1');
+        row.replaceChildren();
+    }
+};
 ```
 
 <style>
@@ -289,10 +330,16 @@ ul {
     padding: 0.5rem;
     line-height: 1.3;
     margin: 0 auto;
+    text-align: center;
 }
 
 .tm-table td, .tm-table th {
     padding: 0 0.5rem;
+    border-bottom: 2px solid transparent;
+}
+
+.active-tx {
+    border-bottom: 2px solid white !important;
 }
 
 :has(> .tape-outer) {
@@ -354,5 +401,12 @@ ul {
 .state-B {
     --state-color: #ff8000;
     --state: "B";
+}
+
+.tnf-row {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 1rem;
+    justify-content: left;
 }
 </style>

@@ -92,7 +92,7 @@ function randomChoice(options) {
     return options[x];
 }
 
-function execTM(elem, tm) {
+function execTM(elem, tm, table) {
     const tapeSize = 19;
     let position;
     let state = 'A';
@@ -100,6 +100,12 @@ function execTM(elem, tm) {
     if (typeof elem === 'string') {
         elem = document.querySelector(elem);
     }
+
+    if (typeof table === 'string') {
+        table = document.querySelector(table);
+    }
+
+    table = table.querySelector('table');
 
     let tape = document.createElement('div');
     tape.classList.add('tape-outer');
@@ -130,6 +136,30 @@ function execTM(elem, tm) {
         head.classList.add('state-' + state);
     }
 
+    function removeHighlight() {
+        let previous = table.querySelectorAll('.active-tx');
+        for (let p of previous) {
+            p.classList.remove('active-tx');
+        }
+    }
+
+    function highlightTransition(sym, state) {
+        removeHighlight();
+
+        let row = table.children[1 + 'ABCDE'.indexOf(state)];
+        let td = row.children[1 + +sym];
+        td.classList.add('active-tx');
+    }
+
+    function readTape() {
+        const cell = tapeInner.querySelectorAll('.tape-cell')[position];
+        return cell.innerText;
+    }
+
+    function doHighlight() {
+        highlightTransition(readTape(), state);
+    }
+
     function executeStep() {
         const oldPosition = position;
         const oldState = state;
@@ -146,21 +176,31 @@ function execTM(elem, tm) {
         }
 
         enterState(tx.slice(2, 3));
+        doHighlight();
 
         return {
             undo: () => {
                 setPosition(oldPosition);
                 enterState(oldState);
                 cell.innerText = oldContents;
+                doHighlight();
             }
         };
     }
 
     setPosition(9);
+    doHighlight();
 
     elem.appendChild(tape);
     return {
-        undo: () => elem.removeChild(tape),
+        undo: () => {
+            elem.removeChild(tape);
+            removeHighlight();
+        },
         executeStep,
     };
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
