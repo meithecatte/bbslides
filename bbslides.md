@@ -209,9 +209,24 @@ const tms = `
 `;
 
 async function doit() {
+    const row = document.querySelector('#tnf-row1');
+
     for (const line of tms.trim().split('\n')) {
         const [tm, status] = line.split(',');
-        drawTM('#tnf-row1', fromStandard(tm));
+        const box = document.createElement('div');
+        row.append(box);
+        drawTM(box, fromStandard(tm));
+        const statusLine = document.createElement('span');
+        statusLine.classList.add('verdict');
+        statusLine.classList.add('unrevealed');
+        if (status == 'halt') {
+            statusLine.innerText = "HALTS";
+            statusLine.classList.add('green');
+        } else {
+            statusLine.innerText = "DOESN'T\nHALT";
+            statusLine.classList.add('blue');
+        }
+        box.append(statusLine);
         await sleep(100);
     }
 }
@@ -222,6 +237,28 @@ return {
     undo: () => {
         const row = document.querySelector('#tnf-row1');
         row.replaceChildren();
+    }
+};
+```
+
+{pause exec-at-unpause}
+```slip-script
+async function doit() {
+    const verdicts = document.querySelectorAll('#tnf-row1 .verdict');
+    for (const verdict of verdicts) {
+        verdict.classList.remove('unrevealed');
+        await sleep(100);
+    }
+}
+
+doit();
+
+return {
+    undo: () => {
+        const verdicts = document.querySelectorAll('#tnf-row1 .verdict');
+        for (const verdict of verdicts) {
+            verdict.classList.add('unrevealed');
+        }
     }
 };
 ```
@@ -408,5 +445,9 @@ ul {
     grid-auto-flow: column;
     gap: 1rem;
     justify-content: left;
+}
+
+.tnf-row .verdict {
+    font-size: 28pt;
 }
 </style>
