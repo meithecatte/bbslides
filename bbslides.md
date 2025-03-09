@@ -28,9 +28,15 @@ bbchallenge.org
 
 {#small-values}
 Small busy beaver values:
-- BB(1) = 1, BB(2) = 6 [[Radó, 1962]]{.cite-list}
-- BB(3) = 21           [[Radó and Lin, 1963]]{.cite-list}
-- BB(4) = 107          [[Brady, 1983]]{.cite-list}
+<ul>
+<li>BB(1) = 1, BB(2) = 6 <span class="cite-list">[Radó, 1962]</span></li>
+<li>BB(3) = 21           <span class="cite-list">[Radó and Lin, 1963]</span></li>
+<li>BB(4) = 107          <span class="cite-list">[Brady, 1983]</span></li>
+<li id="bb5a" class="unrevealed">BB(5) &geq; 47,176,870
+    <span class="cite-list">[Marxen and Buntrock, 1989]</span></li>
+<li id="bb5b" class="unrevealed">BB(5) = 47,176,870
+    <span class="cite-list">[bbchallenge, 2024]</span></li>
+</ul>
 
 {pause}
 
@@ -66,11 +72,11 @@ There is a 25-state Turing machine that implements the above.
 
 Hence, knowing BB(25) is "at least as hard" as solving Goldbach's conjecture.
 
-{pause center-at-unpause=small-values}
-<!-- TODO
-{pause reveal-at-unpause=bb5}
-- BB(5) = 47,176,870   [[Marxen and Buntrock, 1989]]{.cite-list}
--->
+{pause center-at-unpause=bb5a}
+
+{pause reveal-at-unpause=bb5a}
+
+{pause reveal-at-unpause=bb5b}
 
 {pause up-at-unpause #proof-outline}
 ## Proof outline
