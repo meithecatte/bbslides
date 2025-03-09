@@ -1,3 +1,4 @@
+<script src="drawTM.js"></script>
 # Formal verification of the 5th Busy Beaver value
 
 {.author}
@@ -45,7 +46,10 @@ into a Turing machine that halts iff the statement is false,
 by searching for counterexamples.
 
 {.example title="Goldbach's conjecture, 1742"}
-> Every positive even integer can be written as a sum of two primes.
+> Every positive even integer $n > 2$ can be written as a sum of two primes.
+>
+> $4 = 2 + 2 \quad 6 = 3 + 3 \quad 8 = 5 + 3 \quad 10 = 7 + 3 \quad 12 = 7 + 5
+> \quad 14 = 11 + 3 \quad \ldots$
 
 {pause up-at-unpause=hardness}
 
@@ -103,86 +107,77 @@ return {undo: () => elem.innerText = oldText};
 
 <!-- TODO: some visualizers here? -->
 
-{pause up-at-unpause}
+{pause up-at-unpause exec-at-unpause="draw-iso1"}
 ## Efficient TM enumeration
 
-{.has-biopic}
+Naive enumeration has many redundant machines:
+
+- states can be renamed and rearranged without change of behavior {pause}
+
+  {.compare-tms}
+  > {#iso1}
+  >
+  > {#iso2}
+
+{pause exec-at-unpause="draw-iso2"}
+
+{pause exec-at-unpause="draw-unreachable" #diff-unreachable}
+- machines can differ in unreachable parts of their code
+
+  {#unreachable}
+
+{pause up-at-unpause=diff-unreachable}
+
+{.has-biopic #tnf-soln}
 > {.biopic}
 > ![](AllenHBrady.webp) Allen Brady, 1934 — 2024
 >
 > {.for-biopic}
-> > Naive enumeration has many redundant machines:
-> >
-> > - states can be renamed and rearranged without change of behavior
-> > - machines differing only in unreachable parts
-> >
-> > Solution: enumerate-as-you-go, choosing transitions when the TM reaches them.
-> >
+> > Solution: enumerate-as-you-go, choosing transitions only when the TM actually reaches them.
+> > 
 > > This is known as **Tree Normal Form enumeration** [[Brady, 1966]]{.cite}
+> >
+> > {pause exec-at-unpause=draw-tnf-root}
+> >
+> > {#tnf-root}
+> >
+> > {pause up-at-unpause=tnf-soln exec-at-unpause=draw-exec1}
+> >
+> > {#exec1}
 
-{#tnf-example}
-
-{pause exec-at-unpause}
+{#draw-iso1}
 ```slip-script
-let colors = {
-    'A': '#ff0000',
-    'B': '#ff8000',
-    'C': '#0000ff',
-    'D': '#00ff00',
-    'E': '#ff00ff',
-};
+return drawTM('#iso1', fromStandard('1RB---_0LC1RE_0LD1LC_1RA1LB_0RB0RA'));
+```
 
-function state(name) {
-    let elem = document.createElement('span');
-    elem.style.color = colors[name];
-    elem.innerText = name;
-    return elem;
-}
+{#draw-iso2}
+```slip-script
+return drawTM('#iso2', fromStandard('1RB---_0LD1RE_1RA1LB_0LC1LD_0RB0RA'), colors2);
+```
 
-function td(...children) {
-    let elem = document.createElement('td');
-    for (let child of children) {
-        elem.append(child);
+{#draw-unreachable}
+```slip-script
+let x = drawTM('#unreachable', fromStandard('0RB0LC_1LA1RB_1RB---_------_------'), colors1, unreachable='#888');
+slip.unreachableAnimInterval = setInterval(() => {
+    let txs = document.querySelectorAll('#unreachable .unreachable');
+    for (let tx of txs) {
+        let sym = randomChoice('01');
+        let dir = randomChoice('LR');
+        let st = randomChoice('ABCDE');
+        tx.innerText = sym+dir+st;
     }
-    return elem;
-}
+}, 100);
+return {undo: () => {x.undo(); clearInterval(slip.unreachableAnimInterval);}};
+```
 
-function tr(...children) {
-    let elem = document.createElement('tr');
-    for (let child of children) {
-        elem.appendChild(child);
-    }
-    return elem;
-}
+{#draw-tnf-root}
+```slip-script
+return drawTM('#tnf-root', {'0A': '1RB'});
+```
 
-function transition(tx) {
-    if (tx === undefined) {
-        return td('---');
-    }
-
-    return td(tx.slice(0,2), state(tx.slice(2)));
-}
-
-function drawTM(elem, tm) {
-    if (typeof elem === 'string') {
-        elem = document.querySelector(elem);
-    }
-
-    let table = document.createElement('table');
-    table.append(tr(td(), td('0'), td('1')));
-    for (let s in colors) {
-        table.append(tr(td(state(s)),
-            transition(tm['0'+s]),
-            transition(tm['1'+s])));
-    }
-    table.classList.add('tm-table');
-    elem.replaceWith(table);
-}
-
-slip.drawTM = drawTM;
-
-let tm = {'0A': '1RB'};
-drawTM('#tnf-example', tm);
+{#draw-exec1}
+```slip-script
+return execTM('#exec1', {'0A': '1RB'});
 ```
 
 <style>
@@ -257,6 +252,12 @@ drawTM('#tnf-example', tm);
     text-align: center;
 }
 
+.compare-tms {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    text-align: center;
+}
+
 .stamp {
     color: red;
     font-family: monospace;
@@ -281,9 +282,72 @@ ul {
     background: #111827;
     color: white;
     padding: 0.5rem;
+    line-height: 1.3;
+    margin: 0 auto;
 }
 
 .tm-table td, .tm-table th {
     padding: 0 0.5rem;
+}
+
+:has(> .tape-outer) {
+    position: relative;
+}
+
+.tape-outer {
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding-top: 4rem;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.tape {
+    display: grid;
+    grid-auto-flow: column;
+    position: relative;
+}
+
+.tape-cell {
+    font-family: monospace;
+    width: 4rem;
+    height: 4rem;
+    line-height: 4rem;
+    border: 2px solid black;
+    border-right: none;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.tape-head {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
+    border: 8px solid;
+    box-sizing: border-box;
+    border-color: var(--state-color);
+}
+
+.tape-head::before {
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    transform: translateY(-100%);
+    padding-bottom: 0.5rem;
+    color: var(--state-color);
+    content: var(--state);
+}
+
+.state-A {
+    --state-color: #ff0000;
+    --state: "A";
+}
+
+.state-B {
+    --state-color: #ff8000;
+    --state: "B";
 }
 </style>
