@@ -94,6 +94,8 @@ function randomChoice(options) {
 
 function execTM(elem, tm) {
     const tapeSize = 19;
+    let position;
+    let state = 'A';
 
     if (typeof elem === 'string') {
         elem = document.querySelector(elem);
@@ -114,17 +116,51 @@ function execTM(elem, tm) {
 
     let head = document.createElement('div');
     head.classList.add('tape-head');
-    head.classList.add('state-B');
+    head.classList.add('state-A');
     tapeInner.append(head);
 
     function setPosition(i) {
+        position = i;
         head.style.left = `calc(${i * 4}rem + 1px)`;
     }
 
-    setPosition(Math.floor(tapeSize / 2));
+    function enterState(newState) {
+        head.classList.remove('state-' + state);
+        state = newState;
+        head.classList.add('state-' + state);
+    }
+
+    function executeStep() {
+        const oldPosition = position;
+        const oldState = state;
+
+        const cell = tapeInner.querySelectorAll('.tape-cell')[position];
+        const oldContents = cell.innerText;
+        const tx = tm[cell.innerText + state];
+        cell.innerText = tx.slice(0, 1);
+
+        if (tx.slice(1, 2) == 'R') {
+            setPosition(position + 1);
+        } else {
+            setPosition(position - 1);
+        }
+
+        enterState(tx.slice(2, 3));
+
+        return {
+            undo: () => {
+                setPosition(oldPosition);
+                enterState(oldState);
+                cell.innerText = oldContents;
+            }
+        };
+    }
+
+    setPosition(9);
 
     elem.appendChild(tape);
     return {
         undo: () => elem.removeChild(tape),
+        executeStep,
     };
 }

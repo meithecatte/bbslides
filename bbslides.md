@@ -177,7 +177,12 @@ return drawTM('#tnf-root', {'0A': '1RB'});
 
 {#draw-exec1}
 ```slip-script
-return execTM('#exec1', {'0A': '1RB'});
+return exec1 = execTM('#exec1', {'0A': '1RB'});
+```
+
+{pause exec-at-unpause}
+```slip-script
+return exec1.executeStep();
 ```
 
 <style>
