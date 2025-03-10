@@ -179,7 +179,7 @@ startUnreachableAnim = () => {
 
 startUnreachableAnim();
 
-return {undo: () => {x.undo(); clearInterval(unreachableAnimInterval);}};
+return {undo() {x.undo(); clearInterval(unreachableAnimInterval);}};
 ```
 
 {#draw-tnf-root}
@@ -197,7 +197,7 @@ return exec1 = execTM('#exec1', {'0A': '1RB'}, '#tnf-root');
 clearInterval(unreachableAnimInterval);
 const x = exec1.executeStep();
 return {
-    undo: () => {
+    undo() {
         x.undo();
         startUnreachableAnim();
     }
@@ -246,7 +246,7 @@ for (let i = 0; i < row.children.length; i++) {
 }
 
 return {
-    undo: () => {
+    undo() {
         for (const tm of row.children) {
             tm.classList.remove('unfocused');
         }
@@ -333,7 +333,7 @@ const drawit = drawTM('#tm-cycler', tm);
 execCycler = execTM('#exec-cycler', tm, '#tm-cycler');
 
 return {
-    undo: () => {
+    undo() {
         execCycler.undo();
         drawit.undo();
     }
@@ -342,73 +342,38 @@ return {
 
 {pause exec-at-unpause up-at-unpause=idea-cyclers}
 ```slip-script
-async function doit() {
+let undos = [];
+
+const skip = animate(async function * () {
     for (let i = 0; i < 13; i++) {
-        execCycler.stepWithHistory();
-        await sleep(100);
+        undos.push(execCycler.stepWithHistory());
+        yield 100;
     }
+});
+
+return {
+    undo: async function() {
+        await skip();
+        while (undos.length > 0) {
+            undos.pop().undo();
+        }
+    }
+};
+```
+
+{pause exec-at-unpause}
+```slip-script
+async function doit() {
+    await skipAnimation();
+    const tape = document.querySelector('#exec-cycler .tape:nth-child(6)');
+    tape.classList.remove('previous');
 }
 
 doit();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-const tape = document.querySelector('#exec-cycler .tape:nth-child(6)');
-tape.classList.remove('previous');
 
 return {
-    undo: () => {
+    undo() {
+        const tape = document.querySelector('#exec-cycler .tape:nth-child(6)');
         tape.classList.add('previous');
     }
 };

@@ -231,60 +231,101 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function drawTMs(selector, tms) {
-    const row = document.querySelector(selector);
-    let boxes = [];
+function animate(iter) {
+    let skipAnimationResolve;
+    let skipped = false;
 
-    for (const line of tms.trim().split('\n')) {
-        const [tm, status] = line.split(',');
-        const box = document.createElement('div');
-        box.classList.add('unrevealed');
-        drawTM(box, fromStandard(tm));
-        const statusLine = document.createElement('span');
-        statusLine.classList.add('verdict');
-        statusLine.classList.add('unrevealed');
-        if (status == 'halt') {
-            statusLine.innerText = "HALTS";
-            statusLine.classList.add('green');
-        } else {
-            statusLine.innerText = "DOESN'T\nHALT";
-            statusLine.classList.add('blue');
-        }
-        box.append(statusLine);
-
-        row.append(box);
-        boxes.push(box);
-    }
+    const skipPromise = new Promise(resolve => {
+        skipAnimationResolve = resolve;
+    });
 
     async function doit() {
-        for (const box of boxes) {
-            box.classList.remove('unrevealed');
-            await sleep(100);
+        let afterwards = null;
+        let done = false;
+        const skip = skipPromise.then(resolve => {
+            if (!done) {
+                afterwards = resolve;
+            } else {
+                resolve();
+            }
+        });
+
+        for await (const ms of iter()) {
+            await Promise.race([sleep(ms), skip]);
+        }
+
+        done = true;
+
+        if (afterwards != null) {
+            afterwards();
         }
     }
 
     doit();
 
+    return skipAnimation = () => {
+        return new Promise(resolve => {
+            if (!skipped) {
+                skipped = true;
+                skipAnimationResolve(resolve);
+            } else {
+                resolve();
+            }
+        });
+    };
+}
+
+function drawTMs(selector, tms) {
+    const row = document.querySelector(selector);
+
+    const skip = animate(async function * () {
+        for (const line of tms.trim().split('\n')) {
+            const [tm, status] = line.split(',');
+            const box = document.createElement('div');
+            drawTM(box, fromStandard(tm));
+            const statusLine = document.createElement('span');
+            statusLine.classList.add('verdict');
+            statusLine.classList.add('unrevealed');
+            if (status == 'halt') {
+                statusLine.innerText = "HALTS";
+                statusLine.classList.add('green');
+            } else {
+                statusLine.innerText = "DOESN'T\nHALT";
+                statusLine.classList.add('blue');
+            }
+            box.append(statusLine);
+
+            row.append(box);
+            yield 100;
+        }
+    });
+
     return {
-        undo() {
+        undo: async function() {
+            console.log('time to undo the motherfucker');
+            await skip();
+            console.log('did the skip');
             row.replaceChildren();
         }
     };
 }
 
 function revealVerdicts(selector) {
-    const verdicts = document.querySelectorAll(`${selector} .verdict`);
-    async function doit() {
+    const skipPrevious = skipAnimation;
+
+    const skip = animate(async function * () {
+        await skipPrevious();
+        const verdicts = document.querySelectorAll(`${selector} .verdict`);
         for (const verdict of verdicts) {
             verdict.classList.remove('unrevealed');
-            await sleep(100);
+            yield 100;
         }
-    }
-
-    doit();
+    });
 
     return {
-        undo() {
+        undo: async function() {
+            await skip();
+            const verdicts = document.querySelectorAll(`${selector} .verdict`);
             for (const verdict of verdicts) {
                 verdict.classList.add('unrevealed');
             }
