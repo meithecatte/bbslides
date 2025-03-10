@@ -201,19 +201,19 @@ function execTM(elem, tm, table) {
     }
 
     function stepWithHistory() {
-        const cloned = tape.cloneNode(true);
+        const cloned = tapeOuter.cloneNode(true);
         cloned.classList.add('previous');
-        tapeOuter.insertBefore(cloned, tape);
+        elem.insertBefore(cloned, tapeOuter);
         const exec = executeStep();
         return {
             undo() {
                 exec.undo();
-                tapeOuter.removeChild(cloned);
+                elem.removeChild(cloned);
             }
         };
     }
 
-    setPosition(9);
+    setPosition(Math.floor(tapeSize / 2));
     doHighlight();
 
     elem.appendChild(tapeOuter);
@@ -302,9 +302,7 @@ function drawTMs(selector, tms) {
 
     return {
         undo: async function() {
-            console.log('time to undo the motherfucker');
             await skip();
-            console.log('did the skip');
             row.replaceChildren();
         }
     };

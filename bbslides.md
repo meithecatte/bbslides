@@ -369,16 +369,22 @@ return {
 ```slip-script
 async function doit() {
     await skipAnimation();
-    const tape = document.querySelector('#exec-cycler .tape:nth-child(6)');
-    tape.classList.remove('previous');
+    const tape1 = document.querySelector('#exec-cycler .tape-outer:nth-child(6)');
+    tape1.classList.remove('previous');
+    tape1.classList.add('highlighted');
+    const tape2 = document.querySelector('#exec-cycler .tape-outer:nth-child(14)');
+    tape2.classList.add('highlighted');
 }
 
 doit();
 
 return {
     undo() {
-        const tape = document.querySelector('#exec-cycler .tape:nth-child(6)');
-        tape.classList.add('previous');
+        const tape1 = document.querySelector('#exec-cycler .tape-outer:nth-child(6)');
+        tape1.classList.add('previous');
+        tape1.classList.remove('highlighted');
+        const tape2 = document.querySelector('#exec-cycler .tape-outer:nth-child(14)');
+        tape2.classList.remove('highlighted');
     }
 };
 ```
@@ -499,16 +505,9 @@ ul {
     border-bottom: 2px solid white !important;
 }
 
-:has(> .tape-outer) {
-    position: relative;
-    height: 9rem;
-}
-
 .tape-outer {
-    position: absolute;
-    left: 0;
-    right: 0;
     padding-top: 4rem;
+    margin-bottom: 1rem;
     overflow: hidden;
     display: grid;
     justify-content: center;
@@ -560,12 +559,23 @@ ul {
     display: none;
 }
 
-.tape.previous {
+.previous .tape {
     opacity: 0.7;
 }
 
-.tape.previous .tape-head {
+.previous .tape-head {
     border: 13px solid var(--state-color);
+}
+
+.tape-outer.highlighted::after {
+    content: "← SAME";
+    font-size: 28pt;
+    font-family: monospace;
+    font-weight: bold;
+    position: absolute;
+    right: -1rem;
+    line-height: 4rem;
+    color: green;
 }
 
 .state-A {
@@ -619,5 +629,6 @@ ul {
 
 .with-history .tape-outer {
     margin-top: -4rem;
+    margin-bottom: 0;
 }
 </style>
