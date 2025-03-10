@@ -346,23 +346,7 @@ return {
 
 {pause exec-at-unpause up-at-unpause=idea-cyclers}
 ```slip-script
-let undos = [];
-
-const skip = animate(async function * () {
-    for (let i = 0; i < 13; i++) {
-        undos.push(execCycler.stepWithHistory());
-        yield 100;
-    }
-});
-
-return {
-    undo: async function() {
-        await skip();
-        while (undos.length > 0) {
-            undos.pop().undo();
-        }
-    }
-};
+return execCycler.animateSteps(13);
 ```
 
 {pause exec-at-unpause}
@@ -394,11 +378,23 @@ return {
 const elem = document.querySelector('#exec-cycler');
 elem.classList.add('shrink');
 
+const tape1 = document.querySelector('#exec-cycler .tape-outer:nth-child(6)');
+tape1.classList.remove('highlighted');
+const tape2 = document.querySelector('#exec-cycler .tape-outer:nth-child(14)');
+tape2.classList.remove('highlighted');
+
 return {
     undo() {
         elem.classList.remove('shrink');
+        tape1.classList.add('highlighted');
+        tape2.classList.add('highlighted');
     }
 }
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.animateSteps(30, 25);
 ```
 
 <style>
@@ -518,6 +514,21 @@ ul {
     border-bottom: 2px solid white !important;
 }
 
+.tnf-row {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 1rem;
+    justify-content: left;
+}
+
+.tnf-row .verdict {
+    font-size: 28pt;
+}
+
+.unfocused tr, .unfocused .verdict {
+    opacity: 0.3;
+}
+
 /* TM simulation, spacetime diagrams */
 .tape-outer {
     padding-top: 4rem;
@@ -536,9 +547,9 @@ ul {
 
 .tape-cell {
     font-family: monospace;
-    width: 4rem;
-    height: 4rem;
-    line-height: 4rem;
+    width: 2em;
+    height: 2em;
+    line-height: 2em;
     text-align: center;
     box-sizing: border-box;
 }
@@ -550,9 +561,9 @@ ul {
 
 .tape-head {
     position: absolute;
-    width: 4rem;
-    height: 4rem;
-    border: 8px solid var(--state-color);
+    width: 2em;
+    height: 2em;
+    border: 0.3em solid var(--state-color);
     box-sizing: border-box;
 }
 
@@ -575,10 +586,6 @@ ul {
 
 .previous .tape {
     opacity: 0.7;
-}
-
-.previous .tape-head {
-    border: 13px solid var(--state-color);
 }
 
 .tape-outer.highlighted::after {
@@ -617,21 +624,6 @@ ul {
     --state: "E";
 }
 
-.tnf-row {
-    display: grid;
-    grid-auto-flow: column;
-    gap: 1rem;
-    justify-content: left;
-}
-
-.tnf-row .verdict {
-    font-size: 28pt;
-}
-
-.unfocused tr, .unfocused .verdict {
-    opacity: 0.3;
-}
-
 .tm-and-spacetime {
     display: grid;
     grid-template-columns: 1fr 3fr;
@@ -646,6 +638,19 @@ ul {
     margin-bottom: 0;
 }
 
+.shrink {
+    --transition: 0.3s ease-out;
+    font-size: 8pt;
+    transition: font-size var(--transition);
+}
+
 .shrink .tape-cell {
+    color: transparent;
+    transition: color var(--transition);
+}
+
+.shrink .tape-head {
+    border-width: 1em;
+    transition: border-width var(--transition);
 }
 </style>

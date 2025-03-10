@@ -93,7 +93,7 @@ function randomChoice(options) {
 }
 
 function execTM(elem, tm, table) {
-    const tapeSize = 19;
+    const tapeSize = 39;
     let position;
     let state = 'A';
 
@@ -128,7 +128,7 @@ function execTM(elem, tm, table) {
 
     function setPosition(i) {
         position = i;
-        head.style.left = `calc(${i * 4}rem)`;
+        head.style.left = `${i * 2}em`;
     }
 
     function enterState(newState) {
@@ -213,6 +213,26 @@ function execTM(elem, tm, table) {
         };
     }
 
+    function animateSteps(n, ms=100) {
+        let undos = [];
+
+        const skip = animate(async function * () {
+            for (let i = 0; i < n; i++) {
+                undos.push(execCycler.stepWithHistory());
+                yield ms;
+            }
+        });
+
+        return {
+            undo: async function() {
+                await skip();
+                while (undos.length > 0) {
+                    undos.pop().undo();
+                }
+            }
+        };
+    }
+
     setPosition(Math.floor(tapeSize / 2));
     doHighlight();
 
@@ -224,6 +244,7 @@ function execTM(elem, tm, table) {
         },
         executeStep,
         stepWithHistory,
+        animateSteps,
     };
 }
 
