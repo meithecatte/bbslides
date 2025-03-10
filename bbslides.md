@@ -340,22 +340,19 @@ return {
 };
 ```
 
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
-{pause exec-at-unpause}
-```slip-script
-return execCycler.stepWithHistory();
-```
-
 {pause exec-at-unpause up-at-unpause=idea-cyclers}
+```slip-script
+async function doit() {
+    for (let i = 0; i < 13; i++) {
+        execCycler.stepWithHistory();
+        await sleep(100);
+    }
+}
+
+doit();
+```
+
+{pause exec-at-unpause}
 ```slip-script
 return execCycler.stepWithHistory();
 ```

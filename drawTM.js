@@ -191,7 +191,7 @@ function execTM(elem, tm, table) {
         doHighlight();
 
         return {
-            undo: () => {
+            undo() {
                 setPosition(oldPosition);
                 enterState(oldState);
                 writeTape(oldContents);
@@ -206,7 +206,7 @@ function execTM(elem, tm, table) {
         tape.insertBefore(cloned, tapeInner);
         const exec = executeStep();
         return {
-            undo: () => {
+            undo() {
                 exec.undo();
                 tape.removeChild(cloned);
             }
@@ -218,7 +218,7 @@ function execTM(elem, tm, table) {
 
     elem.appendChild(tape);
     return {
-        undo: () => {
+        undo() {
             elem.removeChild(tape);
             removeHighlight();
         },
@@ -266,7 +266,7 @@ function drawTMs(selector, tms) {
     doit();
 
     return {
-        undo: () => {
+        undo() {
             row.replaceChildren();
         }
     };
@@ -284,7 +284,7 @@ function revealVerdicts(selector) {
     doit();
 
     return {
-        undo: () => {
+        undo() {
             for (const verdict of verdicts) {
                 verdict.classList.add('unrevealed');
             }
