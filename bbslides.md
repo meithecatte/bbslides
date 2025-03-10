@@ -130,7 +130,10 @@ Naive enumeration has many redundant machines:
 {pause exec-at-unpause="draw-unreachable" #diff-unreachable}
 - machines can differ in unreachable parts of their code
 
-  {#unreachable}
+  {.compare-tms}
+  > {#unreachable-static}
+  >
+  > {#unreachable}
 
 {pause up-at-unpause=diff-unreachable}
 
@@ -164,6 +167,7 @@ return drawTM('#iso2', fromStandard('1RB---_0LD1RE_1RA1LB_0LC1LD_0RB0RA'), color
 {#draw-unreachable}
 ```slip-script
 let x = drawTM('#unreachable', fromStandard('0RB0LC_1LA1RB_1RB---_------_------'), colors1, unreachable='#888');
+let y = drawTM('#unreachable-static', fromStandard('0RB0LC_1LA1RB_1RB---_------_------'), colors1, unreachable='#888');
 
 startUnreachableAnim = () => {
     unreachableAnimInterval = setInterval(() => {
@@ -179,7 +183,7 @@ startUnreachableAnim = () => {
 
 startUnreachableAnim();
 
-return {undo() {x.undo(); clearInterval(unreachableAnimInterval);}};
+return {undo() {x.undo(); y.undo(); clearInterval(unreachableAnimInterval);}};
 ```
 
 {#draw-tnf-root}
