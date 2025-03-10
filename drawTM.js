@@ -204,3 +204,64 @@ function execTM(elem, tm, table) {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function drawTMs(selector, tms) {
+    const row = document.querySelector(selector);
+    let boxes = [];
+
+    for (const line of tms.trim().split('\n')) {
+        const [tm, status] = line.split(',');
+        const box = document.createElement('div');
+        box.classList.add('unrevealed');
+        drawTM(box, fromStandard(tm));
+        const statusLine = document.createElement('span');
+        statusLine.classList.add('verdict');
+        statusLine.classList.add('unrevealed');
+        if (status == 'halt') {
+            statusLine.innerText = "HALTS";
+            statusLine.classList.add('green');
+        } else {
+            statusLine.innerText = "DOESN'T\nHALT";
+            statusLine.classList.add('blue');
+        }
+        box.append(statusLine);
+
+        row.append(box);
+        boxes.push(box);
+    }
+
+    async function doit() {
+        for (const box of boxes) {
+            box.classList.remove('unrevealed');
+            await sleep(100);
+        }
+    }
+
+    doit();
+
+    return {
+        undo: () => {
+            row.replaceChildren();
+        }
+    };
+}
+
+function revealVerdicts(selector) {
+    const verdicts = document.querySelectorAll(`${selector} .verdict`);
+    async function doit() {
+        for (const verdict of verdicts) {
+            verdict.classList.remove('unrevealed');
+            await sleep(100);
+        }
+    }
+
+    doit();
+
+    return {
+        undo: () => {
+            for (const verdict of verdicts) {
+                verdict.classList.add('unrevealed');
+            }
+        }
+    };
+}

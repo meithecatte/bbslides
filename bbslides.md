@@ -214,60 +214,87 @@ const tms = `
 1RB---_1RC---_------_------_------,halt
 `;
 
-async function doit() {
-    const row = document.querySelector('#tnf-row1');
-
-    for (const line of tms.trim().split('\n')) {
-        const [tm, status] = line.split(',');
-        const box = document.createElement('div');
-        row.append(box);
-        drawTM(box, fromStandard(tm));
-        const statusLine = document.createElement('span');
-        statusLine.classList.add('verdict');
-        statusLine.classList.add('unrevealed');
-        if (status == 'halt') {
-            statusLine.innerText = "HALTS";
-            statusLine.classList.add('green');
-        } else {
-            statusLine.innerText = "DOESN'T\nHALT";
-            statusLine.classList.add('blue');
-        }
-        box.append(statusLine);
-        await sleep(100);
-    }
-}
-
-doit();
-
-return {
-    undo: () => {
-        const row = document.querySelector('#tnf-row1');
-        row.replaceChildren();
-    }
-};
+return drawTMs('#tnf-row1', tms);
 ```
 
 {pause exec-at-unpause}
 ```slip-script
-async function doit() {
-    const verdicts = document.querySelectorAll('#tnf-row1 .verdict');
-    for (const verdict of verdicts) {
-        verdict.classList.remove('unrevealed');
-        await sleep(100);
-    }
-}
+return revealVerdicts('#tnf-row1');
+```
 
-doit();
+{pause exec-at-unpause}
+```slip-script
+const row = document.querySelector('#tnf-row1');
+
+for (let i = 0; i < row.children.length; i++) {
+    if (i == 1) continue;
+    const tm = row.children[i];
+    tm.classList.add('unfocused');
+}
 
 return {
     undo: () => {
-        const verdicts = document.querySelectorAll('#tnf-row1 .verdict');
-        for (const verdict of verdicts) {
-            verdict.classList.add('unrevealed');
+        for (const tm of row.children) {
+            tm.classList.remove('unfocused');
         }
     }
 };
 ```
+
+{#exec2}
+
+{pause exec-at-unpause}
+```slip-script
+return exec2 = execTM('#exec2', {'0A': '1RB', '0B': '1LA'}, '#tnf-row1 > :nth-child(2)');
+```
+
+{pause exec-at-unpause}
+```slip-script
+return exec2.executeStep();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return exec2.executeStep();
+```
+
+{#tnf-row2 .tnf-row}
+
+{pause exec-at-unpause up-at-unpause=tnf-row1}
+```slip-script
+const tms = `
+1RB0LA_1LA---_------_------_------,nonhalt
+1RB1LA_1LA---_------_------_------,halt
+1RB0RA_1LA---_------_------_------,nonhalt
+1RB1RA_1LA---_------_------_------,nonhalt
+1RB0LB_1LA---_------_------_------,halt
+1RB1LB_1LA---_------_------_------,halt
+1RB0RB_1LA---_------_------_------,halt
+1RB1RB_1LA---_------_------_------,halt
+1RB0LC_1LA---_------_------_------,halt
+1RB1LC_1LA---_------_------_------,halt
+1RB0RC_1LA---_------_------_------,halt
+1RB1RC_1LA---_------_------_------,halt
+`;
+
+return drawTMs('#tnf-row2', tms);
+```
+
+{pause exec-at-unpause}
+```slip-script
+return revealVerdicts('#tnf-row2');
+```
+
+{pause}
+
+{.informal}
+Rinse & repeat&trade; {pause up-at-unpause=tnf-row2}
+
+### TNF enumeration is unreasonably effective
+
+- $21^{10} \approx 1.67 \cdot 10^{13}$ possible Turing machines
+- Back-of-the envelope calculation: $\frac{21^{10}}{4! \cdot 2 \cdot 2} \approx 1.74 \cdot 10^{11}$ after symmetry
+- Actually enumerated: $181,385,789 \approx 1.81 \cdot 10^8$
 
 <style>
 .author {
@@ -387,6 +414,7 @@ ul {
 
 :has(> .tape-outer) {
     position: relative;
+    height: 9rem;
 }
 
 .tape-outer {
@@ -455,5 +483,9 @@ ul {
 
 .tnf-row .verdict {
     font-size: 28pt;
+}
+
+.unfocused tr, .unfocused .verdict {
+    opacity: 0.3;
 }
 </style>
