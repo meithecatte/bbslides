@@ -107,24 +107,24 @@ function execTM(elem, tm, table) {
 
     table = table.querySelector('table');
 
-    let tape = document.createElement('div');
-    tape.classList.add('tape-outer');
+    let tapeOuter = document.createElement('div');
+    tapeOuter.classList.add('tape-outer');
 
-    let tapeInner = document.createElement('div');
-    tape.append(tapeInner);
-    tapeInner.classList.add('tape');
+    let tape = document.createElement('div');
+    tapeOuter.append(tape);
+    tape.classList.add('tape');
     for (let i = 0; i < tapeSize; i++) {
         let cell = document.createElement('div');
         cell.classList.add('tape-cell');
         cell.classList.add('zero');
         cell.innerText = '0';
-        tapeInner.append(cell);
+        tape.append(cell);
     }
 
     let head = document.createElement('div');
     head.classList.add('tape-head');
     head.classList.add('state-A');
-    tapeInner.append(head);
+    tape.append(head);
 
     function setPosition(i) {
         position = i;
@@ -153,12 +153,12 @@ function execTM(elem, tm, table) {
     }
 
     function readTape() {
-        const cell = tapeInner.querySelectorAll('.tape-cell')[position];
+        const cell = tape.querySelectorAll('.tape-cell')[position];
         return cell.innerText;
     }
 
     function writeTape(sym) {
-        const cell = tapeInner.querySelectorAll('.tape-cell')[position];
+        const cell = tape.querySelectorAll('.tape-cell')[position];
         cell.innerText = sym;
         if (sym == '0') {
             cell.classList.remove('one');
@@ -201,14 +201,14 @@ function execTM(elem, tm, table) {
     }
 
     function stepWithHistory() {
-        const cloned = tapeInner.cloneNode(true);
+        const cloned = tape.cloneNode(true);
         cloned.classList.add('previous');
-        tape.insertBefore(cloned, tapeInner);
+        tapeOuter.insertBefore(cloned, tape);
         const exec = executeStep();
         return {
             undo() {
                 exec.undo();
-                tape.removeChild(cloned);
+                tapeOuter.removeChild(cloned);
             }
         };
     }
@@ -216,10 +216,10 @@ function execTM(elem, tm, table) {
     setPosition(9);
     doHighlight();
 
-    elem.appendChild(tape);
+    elem.appendChild(tapeOuter);
     return {
         undo() {
-            elem.removeChild(tape);
+            elem.removeChild(tapeOuter);
             removeHighlight();
         },
         executeStep,
