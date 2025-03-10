@@ -202,13 +202,17 @@ function execTM(elem, tm, table) {
 
     function stepWithHistory() {
         const cloned = tapeOuter.cloneNode(true);
-        cloned.classList.add('previous');
         elem.insertBefore(cloned, tapeOuter);
         const exec = executeStep();
+
+        applyHighlightRule(elem.children.length - 2);
+        applyHighlightRule(elem.children.length - 1);
         return {
             undo() {
                 exec.undo();
                 elem.removeChild(cloned);
+                applyHighlightRule(elem.children.length - 2);
+                applyHighlightRule(elem.children.length - 1);
             }
         };
     }
@@ -233,6 +237,33 @@ function execTM(elem, tm, table) {
         };
     }
 
+    function highlightRule(i, n) {
+        return i == n;
+    }
+
+    function applyHighlightRule(i) {
+        if (highlightRule(i, elem.children.length - 1)) {
+            elem.children[i].classList.remove('previous');
+        } else {
+            elem.children[i].classList.add('previous');
+        }
+    }
+
+    function setHighlightRule(f) {
+        const old = highlightRule;
+        highlightRule = f;
+
+        for (let i = 0; i < elem.children.length; i++) {
+            applyHighlightRule(i);
+        }
+
+        return {
+            undo() {
+                setHighlightRule(old);
+            }
+        };
+    }
+
     setPosition(Math.floor(tapeSize / 2));
     doHighlight();
 
@@ -245,6 +276,7 @@ function execTM(elem, tm, table) {
         executeStep,
         stepWithHistory,
         animateSteps,
+        setHighlightRule,
     };
 }
 

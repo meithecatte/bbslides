@@ -353,8 +353,8 @@ return execCycler.animateSteps(13);
 ```slip-script
 async function doit() {
     await skipAnimation();
+    execCycler.setHighlightRule((i, n) => (i + 3) % 8 == 0);
     const tape1 = document.querySelector('#exec-cycler .tape-outer:nth-child(6)');
-    tape1.classList.remove('previous');
     tape1.classList.add('highlighted');
     const tape2 = document.querySelector('#exec-cycler .tape-outer:nth-child(14)');
     tape2.classList.add('highlighted');
@@ -365,10 +365,10 @@ doit();
 return {
     undo() {
         const tape1 = document.querySelector('#exec-cycler .tape-outer:nth-child(6)');
-        tape1.classList.add('previous');
         tape1.classList.remove('highlighted');
         const tape2 = document.querySelector('#exec-cycler .tape-outer:nth-child(14)');
         tape2.classList.remove('highlighted');
+        execCycler.setHighlightRule((i, n) => i == n);
     }
 };
 ```
@@ -394,7 +394,7 @@ return {
 
 {pause exec-at-unpause}
 ```slip-script
-return execCycler.animateSteps(30, 25);
+return execCycler.animateSteps(29, 25);
 ```
 
 <style>
@@ -584,8 +584,8 @@ ul {
     display: none;
 }
 
-.previous .tape {
-    opacity: 0.7;
+.previous .tape-cell.zero {
+    background-color: #4d4d4d;
 }
 
 .tape-outer.highlighted::after {
