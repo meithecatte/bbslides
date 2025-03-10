@@ -397,6 +397,64 @@ return {
 return execCycler.animateSteps(29, 25);
 ```
 
+{pause #idea-tcyclers up-at-unpause exec-at-unpause=run-tcycler}
+### A bit more general: Translated Cyclers
+
+{.tm-and-spacetime}
+> {#tm-tcycler}
+>
+> {#exec-tcycler .with-history .shrink .shrink2}
+
+{#run-tcycler}
+```slip-script
+const tm = fromStandard("1RB0LE_1LC1LA_1LD1LB_1RB---_0RE1RB");
+
+const drawit = drawTM('#tm-tcycler', tm);
+execTCycler = execTM('#exec-tcycler', tm, '#tm-tcycler');
+execTCycler.setHighlightRule((i, n) => i % 25 == 1);
+
+return {
+    undo() {
+        execTCycler.undo();
+        drawit.undo();
+    }
+};
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execTCycler.animateSteps(59, 25, 2);
+```
+
+{pause #tcyclers-however up-at-unpause exec-at-unpause=run-tcycler2}
+### However, the tape isn't always clean
+
+{.tm-and-spacetime}
+> {#tm-tcycler2}
+>
+> {#exec-tcycler2 .with-history .shrink .shrink3}
+
+{#run-tcycler2}
+```slip-script
+const tm = fromStandard("1RB---_0RC0LB_1RD0RE_1LE1RD_1LC1LB");
+
+const drawit = drawTM('#tm-tcycler2', tm);
+execTCycler2 = execTM('#exec-tcycler2', tm, '#tm-tcycler2');
+execTCycler2.setHighlightRule((i, n) => i % 29 == 10);
+
+return {
+    undo() {
+        execTCycler2.undo();
+        drawit.undo();
+    }
+};
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execTCycler2.animateSteps(89, 25, 2);
+```
+
 <style>
 .author {
     text-align: center;
@@ -512,6 +570,7 @@ ul {
 
 .active-tx {
     border-bottom: 2px solid white !important;
+    background: #001748;
 }
 
 .tnf-row {
@@ -630,7 +689,7 @@ ul {
 }
 
 .with-history {
-    height: 90rem;
+    height: 60rem;
 }
 
 .with-history .tape-outer {
@@ -651,6 +710,16 @@ ul {
 
 .shrink .tape-head {
     border-width: 1em;
+    background-color: var(--state-color);
     transition: border-width var(--transition);
+    transition: background-color 0.3s step-end;
+}
+
+.shrink.shrink2 {
+    font-size: 6pt;
+}
+
+.shrink.shrink3 {
+    font-size: 4pt;
 }
 </style>

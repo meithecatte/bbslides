@@ -93,7 +93,7 @@ function randomChoice(options) {
 }
 
 function execTM(elem, tm, table) {
-    const tapeSize = 39;
+    const tapeSize = 79;
     let position;
     let state = 'A';
 
@@ -217,13 +217,13 @@ function execTM(elem, tm, table) {
         };
     }
 
-    function animateSteps(n, ms=100) {
+    function animateSteps(n, ms=100, batch=1) {
         let undos = [];
 
         const skip = animate(async function * () {
             for (let i = 0; i < n; i++) {
-                undos.push(execCycler.stepWithHistory());
-                yield ms;
+                undos.push(stepWithHistory());
+                if (i % batch == 0) yield ms;
             }
         });
 
