@@ -317,7 +317,105 @@ Rinse & repeat&trade; {pause up-at-unpause=tnf-row2}
 {.informal .green}
 This is impossible! Let's do it anyway. {pause}
 
+{#idea-cyclers}
 ### First idea: there's gotta be *some* TMs that just enter a cycle
+
+{.tm-and-spacetime}
+> {#tm-cycler}
+>
+> {#exec-cycler .with-history}
+
+{pause exec-at-unpause}
+```slip-script
+const tm = fromStandard("1RB0RB_1LC1RC_0LD0LD_1RE1LA_1RD---");
+
+const drawit = drawTM('#tm-cycler', tm);
+execCycler = execTM('#exec-cycler', tm, '#tm-cycler');
+
+return {
+    undo: () => {
+        execCycler.undo();
+        drawit.undo();
+    }
+};
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause up-at-unpause=idea-cyclers}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return execCycler.stepWithHistory();
+```
+
+{pause exec-at-unpause}
+```slip-script
+const tape = document.querySelector('#exec-cycler .tape:nth-child(6)');
+tape.classList.remove('previous');
+
+return {
+    undo: () => {
+        tape.classList.add('previous');
+    }
+};
+```
 
 <style>
 .author {
@@ -441,14 +539,14 @@ ul {
 }
 
 .tape-outer {
-    overflow: hidden;
     position: absolute;
     left: 0;
     right: 0;
     padding-top: 4rem;
     overflow: hidden;
-    display: flex;
+    display: grid;
     justify-content: center;
+    width: 48rem;
 }
 
 .tape {
@@ -462,8 +560,6 @@ ul {
     width: 4rem;
     height: 4rem;
     line-height: 4rem;
-    border: 2px solid black;
-    border-right: none;
     text-align: center;
     box-sizing: border-box;
 }
@@ -477,9 +573,8 @@ ul {
     position: absolute;
     width: 4rem;
     height: 4rem;
-    border: 8px solid;
+    border: 8px solid var(--state-color);
     box-sizing: border-box;
-    border-color: var(--state-color);
 }
 
 .tape-head::before {
@@ -487,9 +582,24 @@ ul {
     display: inline-block;
     text-align: center;
     transform: translateY(-100%);
-    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
     color: var(--state-color);
     content: var(--state);
+    /*text-shadow: 2px 2px white, -2px -2px white, 2px -2px white, -2px 2px white;*/
+    font-weight: bold;
+    font-family: monospace;
+}
+
+.with-history .tape-head::before {
+    display: none;
+}
+
+.tape.previous {
+    opacity: 0.7;
+}
+
+.tape.previous .tape-head {
+    border: 13px solid var(--state-color);
 }
 
 .state-A {
@@ -500,6 +610,21 @@ ul {
 .state-B {
     --state-color: #ff8000;
     --state: "B";
+}
+
+.state-C {
+    --state-color: #0000ff;
+    --state: "C";
+}
+
+.state-D {
+    --state-color: #00ff00;
+    --state: "D";
+}
+
+.state-E {
+    --state-color: #ff00ff;
+    --state: "E";
 }
 
 .tnf-row {
@@ -515,5 +640,18 @@ ul {
 
 .unfocused tr, .unfocused .verdict {
     opacity: 0.3;
+}
+
+.tm-and-spacetime {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+.with-history {
+    height: 90rem;
+}
+
+.with-history .tape-outer {
+    margin-top: -4rem;
 }
 </style>

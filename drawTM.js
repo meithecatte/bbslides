@@ -128,7 +128,7 @@ function execTM(elem, tm, table) {
 
     function setPosition(i) {
         position = i;
-        head.style.left = `calc(${i * 4}rem + 1px)`;
+        head.style.left = `calc(${i * 4}rem)`;
     }
 
     function enterState(newState) {
@@ -200,6 +200,19 @@ function execTM(elem, tm, table) {
         };
     }
 
+    function stepWithHistory() {
+        const cloned = tapeInner.cloneNode(true);
+        cloned.classList.add('previous');
+        tape.insertBefore(cloned, tapeInner);
+        const exec = executeStep();
+        return {
+            undo: () => {
+                exec.undo();
+                tape.removeChild(cloned);
+            }
+        };
+    }
+
     setPosition(9);
     doHighlight();
 
@@ -210,6 +223,7 @@ function execTM(elem, tm, table) {
             removeHighlight();
         },
         executeStep,
+        stepWithHistory,
     };
 }
 
