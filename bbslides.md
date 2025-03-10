@@ -164,16 +164,22 @@ return drawTM('#iso2', fromStandard('1RB---_0LD1RE_1RA1LB_0LC1LD_0RB0RA'), color
 {#draw-unreachable}
 ```slip-script
 let x = drawTM('#unreachable', fromStandard('0RB0LC_1LA1RB_1RB---_------_------'), colors1, unreachable='#888');
-slip.unreachableAnimInterval = setInterval(() => {
-    let txs = document.querySelectorAll('#unreachable .unreachable');
-    for (let tx of txs) {
-        let sym = randomChoice('01');
-        let dir = randomChoice('LR');
-        let st = randomChoice('ABCDE');
-        tx.innerText = sym+dir+st;
-    }
-}, 100);
-return {undo: () => {x.undo(); clearInterval(slip.unreachableAnimInterval);}};
+
+startUnreachableAnim = () => {
+    unreachableAnimInterval = setInterval(() => {
+        let txs = document.querySelectorAll('#unreachable .unreachable');
+        for (let tx of txs) {
+            let sym = randomChoice('01');
+            let dir = randomChoice('LR');
+            let st = randomChoice('ABCDE');
+            tx.innerText = sym+dir+st;
+        }
+    }, 100);
+}
+
+startUnreachableAnim();
+
+return {undo: () => {x.undo(); clearInterval(unreachableAnimInterval);}};
 ```
 
 {#draw-tnf-root}
@@ -188,7 +194,14 @@ return exec1 = execTM('#exec1', {'0A': '1RB'}, '#tnf-root');
 
 {pause exec-at-unpause}
 ```slip-script
-return exec1.executeStep();
+clearInterval(unreachableAnimInterval);
+const x = exec1.executeStep();
+return {
+    undo: () => {
+        x.undo();
+        startUnreachableAnim();
+    }
+}
 ```
 
 {pause}
@@ -290,11 +303,21 @@ return revealVerdicts('#tnf-row2');
 {.informal}
 Rinse & repeat&trade; {pause up-at-unpause=tnf-row2}
 
+{#unreasonably-effective}
 ### TNF enumeration is unreasonably effective
 
 - $21^{10} \approx 1.67 \cdot 10^{13}$ possible Turing machines
 - Back-of-the envelope calculation: $\frac{21^{10}}{4! \cdot 2 \cdot 2} \approx 1.74 \cdot 10^{11}$ after symmetry
 - Actually enumerated: $181,385,789 \approx 1.81 \cdot 10^8$
+
+{pause up-at-unpause=unreasonably-effective}
+
+## Deciding the undecidable: a quick tutorial
+
+{.informal .green}
+This is impossible! Let's do it anyway. {pause}
+
+### First idea: there's gotta be *some* TMs that just enter a cycle
 
 <style>
 .author {
@@ -336,7 +359,7 @@ Rinse & repeat&trade; {pause up-at-unpause=tnf-row2}
 }
 
 .informal {
-    color: orange;
+    color: oklch(0.75 0.183 55.934);
     text-align: center;
     font-weight: bold;
     font-size: 32pt;
@@ -443,6 +466,11 @@ ul {
     border-right: none;
     text-align: center;
     box-sizing: border-box;
+}
+
+.tape-cell.zero {
+    background-color: black;
+    color: white;
 }
 
 .tape-head {

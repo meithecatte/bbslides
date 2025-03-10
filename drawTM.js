@@ -116,6 +116,7 @@ function execTM(elem, tm, table) {
     for (let i = 0; i < tapeSize; i++) {
         let cell = document.createElement('div');
         cell.classList.add('tape-cell');
+        cell.classList.add('zero');
         cell.innerText = '0';
         tapeInner.append(cell);
     }
@@ -156,6 +157,18 @@ function execTM(elem, tm, table) {
         return cell.innerText;
     }
 
+    function writeTape(sym) {
+        const cell = tapeInner.querySelectorAll('.tape-cell')[position];
+        cell.innerText = sym;
+        if (sym == '0') {
+            cell.classList.remove('one');
+            cell.classList.add('zero');
+        } else {
+            cell.classList.remove('zero');
+            cell.classList.add('one');
+        }
+    }
+
     function doHighlight() {
         highlightTransition(readTape(), state);
     }
@@ -164,10 +177,9 @@ function execTM(elem, tm, table) {
         const oldPosition = position;
         const oldState = state;
 
-        const cell = tapeInner.querySelectorAll('.tape-cell')[position];
-        const oldContents = cell.innerText;
-        const tx = tm[cell.innerText + state];
-        cell.innerText = tx.slice(0, 1);
+        const oldContents = readTape();
+        const tx = tm[oldContents + state];
+        writeTape(tx.slice(0, 1));
 
         if (tx.slice(1, 2) == 'R') {
             setPosition(position + 1);
@@ -182,7 +194,7 @@ function execTM(elem, tm, table) {
             undo: () => {
                 setPosition(oldPosition);
                 enterState(oldState);
-                cell.innerText = oldContents;
+                writeTape(oldContents);
                 doHighlight();
             }
         };
