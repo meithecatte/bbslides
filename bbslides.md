@@ -389,6 +389,18 @@ return {
 };
 ```
 
+{pause exec-at-unpause}
+```slip-script
+const elem = document.querySelector('#exec-cycler');
+elem.classList.add('shrink');
+
+return {
+    undo() {
+        elem.classList.remove('shrink');
+    }
+}
+```
+
 <style>
 .author {
     text-align: center;
@@ -486,6 +498,7 @@ ul {
     line-height: 1.6;
 }
 
+/* TM tables */
 .tm-table {
     font-family: monospace;
     background: #111827;
@@ -505,6 +518,7 @@ ul {
     border-bottom: 2px solid white !important;
 }
 
+/* TM simulation, spacetime diagrams */
 .tape-outer {
     padding-top: 4rem;
     margin-bottom: 1rem;
@@ -630,5 +644,8 @@ ul {
 .with-history .tape-outer {
     margin-top: -4rem;
     margin-bottom: 0;
+}
+
+.shrink .tape-cell {
 }
 </style>
