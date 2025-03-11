@@ -10,7 +10,7 @@ bbchallenge.org
 
 {.has-biopic}
 > {.biopic}
-> ![](TiborRado.jpg) Tibor Radó, 1895 — 1965
+> ![](TiborRado.jpg) **Tibor Radó**, 1895 — 1965
 >
 > {.for-biopic}
 > > {.definition}
@@ -40,7 +40,7 @@ Small busy beaver values:
 
 {pause}
 
-{.indent}
+{.indent #bb4-explanation}
 > For each 4-state Turing machine, witness that it halts
 > within 107 steps, or __prove it never halts__ {pause} (which can be hard{.red} in general)
 
@@ -66,7 +66,7 @@ by searching for counterexamples.
 {pause}
 
 There is a 25-state Turing machine that implements the above.
-[[anonymous, 2016]]{.cite} Verified in Lean! [[lengyijun, 2024]]{.cite}
+[[anonymous, 2016]]{.cite} Verified in [Lean]{.tech}! [[lengyijun, 2024]]{.cite}
 
 {pause}
 
@@ -78,13 +78,16 @@ Hence, knowing BB(25) is "at least as hard" as solving Goldbach's conjecture.
 
 {pause reveal-at-unpause=bb5b}
 
+{pause up-at-unpause}
+## TODO: something about what bbchallenge is, I think
+
 {pause up-at-unpause #proof-outline}
 ## Proof outline
 
 ### 1. Enumerate [all]{#scarequotes} 5-state Turing machines {pause}
 
 - There are $21^{10} \approx 1.67 \cdot 10^{13}$ possible 5-state Turing machines {pause}
-- Only [$181,385,789$]{.green} after symmetries and pruning
+- Only $181,385,789$ after symmetries and pruning
 
 {pause exec-at-unpause}
 ```slip-script
@@ -96,7 +99,7 @@ return {undo: () => elem.innerText = oldText};
 
 ### 2. Try automated proof strategies {pause}
 
-- Deciders: programs that, given a TM, output one of
+- [Deciders]{.keyword}: programs that, given a TM, output one of
 
 {.verdicts}
 > [HALTS]{.verdict .green}
@@ -109,12 +112,13 @@ return {undo: () => elem.innerText = oldText};
 
 ### 3. Manually inspect what's left {pause}
 
-- Holdouts: machines with the most interesting behavior
+- [Holdouts]{.keyword}: machines that the decider pipeline couldn't deal with
+  - Usually the most interesting ones
 
 <!-- TODO: some visualizers here? -->
 
 {pause up-at-unpause exec-at-unpause="draw-iso1"}
-## Efficient TM enumeration
+## 1. Efficient TM enumeration
 
 Naive enumeration has many redundant machines:
 
@@ -139,12 +143,12 @@ Naive enumeration has many redundant machines:
 
 {.has-biopic #tnf-soln}
 > {.biopic}
-> ![](AllenHBrady.webp) Allen Brady, 1934 — 2024
+> ![](AllenHBrady.webp) **Allen Brady**, 1934 — 2024
 >
 > {.for-biopic}
 > > Solution: enumerate-as-you-go, choosing transitions only when the TM actually reaches them.
 > > 
-> > This is known as **Tree Normal Form enumeration** [[Brady, 1966]]{.cite}
+> > This is known as [Tree Normal Form enumeration]{.keyword} [[Brady, 1966]]{.cite}
 > >
 > > {pause exec-at-unpause=draw-tnf-root}
 > >
@@ -308,7 +312,7 @@ return revealVerdicts('#tnf-row2');
 Rinse & repeat&trade; {pause up-at-unpause=tnf-row2}
 
 {#unreasonably-effective}
-### TNF enumeration is unreasonably effective
+### [TNF enumeration]{.keyword} is unreasonably effective
 
 - $21^{10} \approx 1.67 \cdot 10^{13}$ possible Turing machines
 - Back-of-the envelope calculation: $\frac{21^{10}}{4! \cdot 2 \cdot 2} \approx 1.74 \cdot 10^{11}$ after symmetry
@@ -316,7 +320,7 @@ Rinse & repeat&trade; {pause up-at-unpause=tnf-row2}
 
 {pause up-at-unpause=unreasonably-effective}
 
-## Deciding the undecidable: a quick tutorial
+## 2. Deciding the undecidable: a quick tutorial
 
 {.informal .green}
 This is impossible! Let's do it anyway. {pause}
@@ -398,7 +402,7 @@ return execCycler.animateSteps(29, 25);
 ```
 
 {pause #idea-tcyclers up-at-unpause exec-at-unpause=run-tcycler}
-### A bit more general: Translated Cyclers
+### A bit more general: [Translated Cyclers]{.keyword}
 
 {.tm-and-spacetime}
 > {#tm-tcycler}
@@ -488,7 +492,47 @@ They can get a [LOT]{.emph}  worse {pause up-at-unpause=tcyclers-bigger}
 > - Required an individual Coq proof of nonhalting
 > - One of the most complex 5-state TMs
 
+{pause up-at-unpause}
+### TODO: Perhaps a slide on the statistics of how common Cyclers/TCs are
 
+## TODO: CPS? RepWL? CTL/FAR
+
+## 3. What are the holdouts like?
+
+- could talk about bbfind and Skelet here
+- Skelet #10 is a nice small thing
+- Skelet #1
+- Skelet #17
+- don't need that much detail, should take 1-2min of presentation time tops
+
+{pause up-at-unpause}
+## The formal proof
+
+For the first N years of bbchallenge, no formal verification people were participating. {pause}
+
+Original correctness strategy:
+  - modular pipeline with very loose interlinking
+    - in place of the [decider]{.keyword} pipeline, the [TNF enumeration]{.keyword} used a very simple criterion:
+      - if it halts within 47,176,870, then it halts
+      - otherwise, mark it as undecided
+  - independent, interoperable implementations of each component
+  - consensus-based development
+
+{pause #nathan-dafny}
+In $YEAR, Nathan whatshisname TODO wrote formally verified versions of some
+of the deciders in [Dafny]{.tech}:
+- [F]{.keyword}inite [A]{.keyword}utomata [R]{.keyword}eduction
+- Halting Segment (since obsoleted by other work)
+
+{pause up-at-unpause=nathan-dafny}
+![](mei-first-discord-message.png)
+
+In 2023, [mei]{.mei} joins the project. {pause}
+- always been meaning to get into formal verification (seemed interesting) {pause}
+- previous experience: small stuff in [Isabelle/HOL]{.tech} {pause}
+- read Adam Chlipala's **Certified Programming with Dependent Types** and forgot most of it {pause}
+- learned [Coq]{.tech} through **Software Foundations** {pause}
+- found bbchallenge through OEIS immediately afterwards {pause}
 
 <style>
 .author {
@@ -501,6 +545,25 @@ They can get a [LOT]{.emph}  worse {pause up-at-unpause=tcyclers-bigger}
     font-size: 20pt;
     text-align: center;
     order: 2;
+}
+
+img {
+    width: 100%;
+}
+
+.mei {
+    color: oklch(0.715 0.143 215.221);
+    font-weight: bold;
+}
+
+.keyword {
+    color: oklch(0.696 0.17 162.48);
+    font-weight: bold;
+}
+
+.tech {
+    color: oklch(0.541 0.281 293.009);
+    font-weight: bold;
 }
 
 .biopic img {
