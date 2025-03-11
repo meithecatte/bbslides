@@ -211,7 +211,6 @@ function execTM(elem, tm, table) {
             undo() {
                 exec.undo();
                 elem.removeChild(cloned);
-                applyHighlightRule(elem.children.length - 2);
                 applyHighlightRule(elem.children.length - 1);
             }
         };
