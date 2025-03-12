@@ -506,9 +506,11 @@ Outside of [Cyclers]{.keyword}, we can't hope to keep tracking the tape exactly
 
 {pause exec-at-unpause}
 ```slip-script
-return cpsTape = inertTape('#cps-tape', 'A', [0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1]);
+cpsTapeExampleContents = [0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0];
+return cpsTape = inertTape('#cps-tape', 'A', cpsTapeExampleContents);
 ```
 
+{#section-cps}
 ## [$n$-gram]{.keyword} [C]{.keyword}losed [P]{.keyword}osition [S]{.keyword}et {pause}
 
 {#cps-tape .extra-border .wide}
@@ -570,23 +572,65 @@ return {
 
 {#cps-tape2 .extra-border .wide .extra-space-above}
 
-{pause exec-at-unpause}
+{pause exec-at-unpause up-at-unpause=section-cps}
 ```slip-script
-return cpsTape2 = inertTape('#cps-tape2', 'A', [0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1]);
+cpsTape2 = inertTape('#cps-tape2', 'A', cpsTapeExampleContents.slice(6));
+document.querySelector('#cps-tape2 .tape-head').remove();
+return cpsTape2;
 ```
 
-{#ngram-set}
-
-<!--
 {pause exec-at-unpause}
 ```slip-script
-mkTapeSnippet(where, contents) {
-    const snippet = document.createElement('div');
-    for (const sym of contents) {
+const n = 3;
+const tapeSize = 9;
+const container = document.querySelector('#cps-tape2');
+const origTape = document.querySelector('#cps-tape2 .tape-outer');
+function mkTapeSnippet(position) {
+    const snippet = origTape.cloneNode(true);
+    container.append(snippet);
+
+    const inner = snippet.querySelector('.tape');
+    // bleh, I don't know a better API off-hand
+    let marginR = 0;
+    while (position + n < inner.children.length) {
+        inner.removeChild(inner.children[position + n]);
+        marginR++;
+    }
+
+    for (let i = 0; i < position; i++) {
+        inner.removeChild(inner.children[0]);
+    }
+
+    snippet.style.marginRight = `${marginR * 2}em`;
+    snippet.style.marginLeft = `${position * 2}em`;
+}
+
+const skip = animate(async function * () {
+    for (let i = 1; i + n <= tapeSize; i++) {
+        mkTapeSnippet(i);
+        yield 100;
+    }
+
+    /*
+    let ellipsis = document.createElement('div');
+    ellipsis.innerText = '. . .';
+    ellipsis.style.textAlign = 'center';
+    ellipsis.style.fontSize = '32pt';
+    ellipsis.style.lineHeight = '0.8em';
+    container.append(ellipsis);
+    */
+});
+
+return {
+    undo: async function() {
+        await skip();
+
+        while (container.children.length > 1) {
+            container.removeChild(container.children[1]);
+        }
     }
 }
 ```
--->
 
 {pause}
 
@@ -818,16 +862,7 @@ ul {
 }
 
 .extra-border .tape {
-    border-left: 2px solid black;
-    border-right: 2px solid black;
-}
-
-.extra-border .tape-outer:first-child .tape {
-    border-top: 2px solid black;
-}
-
-.extra-border .tape-outer:last-child .tape {
-    border-bottom: 2px solid black;
+    border: 2px solid black;
 }
 
 .extra-border .tape-head {
@@ -990,5 +1025,13 @@ ul {
 
 .extra-space-above {
     margin-top: 4rem;
+}
+
+#cps-tape2 .tape-outer {
+    padding-top: 0.5rem;
+}
+
+#cps-tape2 {
+    padding-left: 12em;
 }
 </style>
