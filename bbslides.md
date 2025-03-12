@@ -148,7 +148,7 @@ Naive enumeration has many redundant machines:
 > {.for-biopic}
 > > Solution: enumerate-as-you-go, choosing transitions only when the TM actually reaches them.
 > > 
-> > This is known as [Tree Normal Form enumeration]{.keyword} [[Brady, 1966]]{.cite}
+> > This is known as [T]{.keyword}ree [N]{.keyword}ormal [F]{.keyword}orm [enumeration]{.keyword} [[Brady, 1966]]{.cite}
 > >
 > > {pause exec-at-unpause=draw-tnf-root}
 > >
@@ -431,7 +431,9 @@ return execTCycler.animateSteps(59, 25, 2);
 ```
 
 <!-- {pause #tcyclers-however up-at-unpause exec-at-unpause=run-tcycler2}
-### However, the tape isn't always clean
+### However, the tape left behind isn't always clean
+
+TODO: better example here?
 
 {.tm-and-spacetime}
 > {#tm-tcycler2}
@@ -493,7 +495,102 @@ They can get a [LOT]{.emph}  worse {pause up-at-unpause=tcyclers-bigger}
 > - One of the most complex 5-state TMs
 
 {pause up-at-unpause}
+### TODO: execution transcript based decider
 ### TODO: Perhaps a slide on the statistics of how common Cyclers/TCs are
+
+Outside of [Cyclers]{.keyword}, we can't hope to keep tracking the tape exactly
+
+{pause}
+
+#### Idea: soundly approximate it in some way. Abstract interpretation.
+
+{pause exec-at-unpause}
+```slip-script
+return cpsTape = inertTape('#cps-tape', 'A', [0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1]);
+```
+
+## [$n$-gram]{.keyword} [C]{.keyword}losed [P]{.keyword}osition [S]{.keyword}et {pause}
+
+{#cps-tape .extra-border .wide}
+
+{pause exec-at-unpause}
+```slip-script
+const tape = document.querySelectorAll('#cps-tape .tape-cell');
+const tapeSize = tape.length;
+const n = 3;
+const position = Math.floor(tapeSize / 2);
+const revealedL = position - n;
+const revealedR = position + n;
+
+for (let i = 0; i < revealedL; i++) {
+    tape[i].classList.add('cps-masked');
+}
+
+for (let i = revealedR + 1; i < tapeSize; i++) {
+    tape[i].classList.add('cps-masked');
+}
+
+return {
+    undo() {
+        for (let i = 0; i < revealedL; i++) {
+            tape[i].classList.remove('cps-masked');
+        }
+
+        for (let i = revealedR + 1; i < tapeSize; i++) {
+            tape[i].classList.remove('cps-masked');
+        }
+    }
+}
+```
+
+{pause exec-at-unpause}
+```slip-script
+cpsTape.setPosition(8);
+cpsTape.enterState('B');
+return {
+    undo() {
+        cpsTape.setPosition(7);
+        cpsTape.enterState('A');
+    }
+}
+```
+
+{pause exec-at-unpause}
+```slip-script
+const cell = document.querySelector('#cps-tape .tape-cell:nth-child(12)');
+
+cell.classList.add('mystery');
+
+return {
+    undo() {
+        cell.classList.remove('mystery');
+    }
+}
+```
+
+{#cps-tape2 .extra-border .wide .extra-space-above}
+
+{pause exec-at-unpause}
+```slip-script
+return cpsTape2 = inertTape('#cps-tape2', 'A', [0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1]);
+```
+
+{#ngram-set}
+
+<!--
+{pause exec-at-unpause}
+```slip-script
+mkTapeSnippet(where, contents) {
+    const snippet = document.createElement('div');
+    for (const sym of contents) {
+    }
+}
+```
+-->
+
+{pause}
+
+<!-- TODO: highlight the part of the tape being left alone, label $n = 3$ -->
 
 ## TODO: CPS? RepWL? CTL/FAR
 
@@ -527,12 +624,17 @@ of the deciders in [Dafny]{.tech}:
 {pause up-at-unpause=nathan-dafny}
 ![](mei-first-discord-message.png)
 
+{#enter-mei-stage-left}
 In 2023, [mei]{.mei} joins the project. {pause}
 - always been meaning to get into formal verification (seemed interesting) {pause}
 - previous experience: small stuff in [Isabelle/HOL]{.tech} {pause}
 - read Adam Chlipala's **Certified Programming with Dependent Types** and forgot most of it {pause}
 - learned [Coq]{.tech} through **Software Foundations** {pause}
 - found bbchallenge through OEIS immediately afterwards {pause}
+
+{pause up-at-unpause=enter-mei-stage-left}
+
+
 
 <style>
 .author {
@@ -697,7 +799,7 @@ ul {
 
 /* TM simulation, spacetime diagrams */
 .tape-outer {
-    padding-top: 4rem;
+    padding-top: 2rem;
     margin-bottom: 1rem;
     overflow: hidden;
     display: grid;
@@ -705,10 +807,38 @@ ul {
     width: 48rem;
 }
 
+:is(h1, h2, h3, h4) + :has(.tape-outer) {
+    margin-top: -2rem;
+}
+
 .tape {
     display: grid;
     grid-auto-flow: column;
     position: relative;
+}
+
+.extra-border .tape {
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+}
+
+.extra-border .tape-outer:first-child .tape {
+    border-top: 2px solid black;
+}
+
+.extra-border .tape-outer:last-child .tape {
+    border-bottom: 2px solid black;
+}
+
+.extra-border .tape-head {
+    width: calc(2em + 4px);
+    height: calc(2em + 4px);
+    margin-top: -2px;
+    margin-left: -2px;
+}
+
+.wide .tape-outer {
+    width: auto;
 }
 
 .tape-cell {
@@ -800,7 +930,7 @@ ul {
 }
 
 .with-history .tape-outer {
-    margin-top: -4rem;
+    margin-top: -2rem;
     margin-bottom: 0;
 }
 
@@ -828,5 +958,37 @@ ul {
 
 .shrink.shrink3 {
     font-size: 4pt;
+}
+
+/* CPS specific */
+.tape-cell.cps-masked {
+    position: relative;
+}
+
+.tape-cell::after {
+    position: absolute;
+    width: 2em;
+    height: 2em;
+    left: 0;
+    top: 0;
+    content: "?";
+    font-weight: bold;
+    /* TODO(lowbrained): maybe a diagonal-striped background here? */
+    background-color: #888;
+    color: white;
+    opacity: 0;
+}
+
+.tape-cell.cps-masked::after {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.tape-cell.cps-masked.mystery::after {
+    background-color: violet;
+}
+
+.extra-space-above {
+    margin-top: 4rem;
 }
 </style>

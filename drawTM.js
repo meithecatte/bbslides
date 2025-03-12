@@ -92,8 +92,16 @@ function randomChoice(options) {
     return options[x];
 }
 
-function execTM(elem, tm, table) {
-    const tapeSize = 79;
+function execTM(elem, tm, table, initialTape=null) {
+    let tapeSize;
+    if (initialTape === null) {
+        tapeSize = 79;
+        initialTape = [];
+        for (let i = 0; i < tapeSize; i++) initialTape.push('0');
+    } else {
+        tapeSize = initialTape.length;
+    }
+
     let position;
     let state = 'A';
 
@@ -113,18 +121,10 @@ function execTM(elem, tm, table) {
     let tape = document.createElement('div');
     tapeOuter.append(tape);
     tape.classList.add('tape');
-    for (let i = 0; i < tapeSize; i++) {
-        let cell = document.createElement('div');
-        cell.classList.add('tape-cell');
-        cell.classList.add('zero');
-        cell.innerText = '0';
-        tape.append(cell);
-    }
 
     let head = document.createElement('div');
     head.classList.add('tape-head');
     head.classList.add('state-A');
-    tape.append(head);
 
     function setPosition(i) {
         position = i;
@@ -157,8 +157,7 @@ function execTM(elem, tm, table) {
         return cell.innerText;
     }
 
-    function writeTape(sym) {
-        const cell = tape.querySelectorAll('.tape-cell')[position];
+    function setCellContents(cell, sym) {
         cell.innerText = sym;
         if (sym == '0') {
             cell.classList.remove('one');
@@ -167,6 +166,11 @@ function execTM(elem, tm, table) {
             cell.classList.remove('zero');
             cell.classList.add('one');
         }
+    }
+
+    function writeTape(sym) {
+        const cell = tape.querySelectorAll('.tape-cell')[position];
+        setCellContents(cell, sym);
     }
 
     function doHighlight() {
@@ -263,6 +267,14 @@ function execTM(elem, tm, table) {
         };
     }
 
+    for (const sym of initialTape) {
+        let cell = document.createElement('div');
+        cell.classList.add('tape-cell');
+        setCellContents(cell, sym);
+        tape.append(cell);
+    }
+    tape.append(head);
+
     setPosition(Math.floor(tapeSize / 2));
     doHighlight();
 
@@ -276,6 +288,9 @@ function execTM(elem, tm, table) {
         stepWithHistory,
         animateSteps,
         setHighlightRule,
+        setPosition,
+        setCellContents,
+        enterState,
     };
 }
 
@@ -381,4 +396,59 @@ function revealVerdicts(selector) {
             }
         }
     };
+}
+
+function inertTape(elem, state, contents, position=null) {
+    if (typeof elem === 'string') {
+        elem = document.querySelector(elem);
+    }
+
+    let tapeOuter = document.createElement('div');
+    tapeOuter.classList.add('tape-outer');
+    elem.append(tapeOuter);
+
+    let tape = document.createElement('div');
+    tapeOuter.append(tape);
+    tape.classList.add('tape');
+    for (const sym of contents) {
+        let cell = document.createElement('div');
+        cell.classList.add('tape-cell');
+        cell.innerText = sym;
+        if (sym == 0) {
+            cell.classList.add('zero');
+        } else {
+            cell.classList.add('one');
+        }
+        tape.append(cell);
+    }
+
+    let head = document.createElement('div');
+    head.classList.add('tape-head');
+    head.classList.add('state-' + state);
+    tape.append(head);
+
+    if (position === null) {
+        position = Math.floor(contents.length / 2);
+    }
+
+    function setPosition(i) {
+        position = i;
+        head.style.left = `${i * 2}em`;
+    }
+
+    function enterState(newState) {
+        head.classList.remove('state-' + state);
+        state = newState;
+        head.classList.add('state-' + state);
+    }
+
+    setPosition(position);
+
+    return {
+        setPosition,
+        enterState,
+        undo() {
+            elem.removeChild(tapeOuter);
+        }
+    }
 }
