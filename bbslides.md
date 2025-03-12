@@ -458,18 +458,37 @@ return execTCycler2.animateSteps(89, 25, 2);
 {pause #tcyclers-bigger up-at-unpause}
 ### Translated Cyclers can get bigger
 
+
+
 {.diagram-and-bullets}
-> ![A complex translated cycler with a large translation pattern](TC_1RB0LE_1LC0RD_---1LD_1RE0LA_1LA0RE.png)
->
+> {#tm-big-TC-table}
+>  ![A complex translated cycler with a large translation pattern](TC_1RB0LE_1LC0RD_---1LD_1RE0LA_1LA0RE.png) 
+> 
 > - 10,000-step space-time diagram 
 > - Behaviour starts after about 1000 steps
 > - Period is about 600 steps
 
+{pause exec-at-unpause}
+```slip-script
+return drawTM('#tm-big-TC-table', fromStandard('1RB0LE_1LC0RD_---1LD_1RE0LA_1LA0RE'));
+```
+
 {pause}
 
 {.informal}
-It can get a [LOT]{.emph}  worse {pause up-at-unpause=tcyclers-bigger}
+They can get a [LOT]{.emph}  worse {pause up-at-unpause=tcyclers-bigger}
 
+{pause #skelet-tcycler up-at-unpause}
+## Skelet #1, a ginormous Translated Cycler
+
+{.diagram-and-bullets}
+> ![Skelet #1 translated cycler](skelet1.png)
+> 
+> - Discovered by Georgi Georgiev (a.k.a Skelet) in 2003
+> - Behavior starts after $10^{51}$ steps
+> - Period of more than 8 billion steps
+> - Required an individual Coq proof of nonhalting
+> - One of the most complex 5-state TMs
 
 
 
