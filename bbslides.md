@@ -565,11 +565,11 @@ ul {
 
 .tm-table td, .tm-table th {
     padding: 0 0.5rem;
-    border-bottom: 2px solid transparent;
+    border: 2px solid transparent;
 }
 
 .active-tx {
-    border-bottom: 2px solid white !important;
+    border: 2px solid white !important;
     background: #001748;
 }
 
