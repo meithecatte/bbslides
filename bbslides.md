@@ -426,7 +426,7 @@ return {
 return execTCycler.animateSteps(59, 25, 2);
 ```
 
-{pause #tcyclers-however up-at-unpause exec-at-unpause=run-tcycler2}
+<!-- {pause #tcyclers-however up-at-unpause exec-at-unpause=run-tcycler2}
 ### However, the tape isn't always clean
 
 {.tm-and-spacetime}
@@ -453,7 +453,25 @@ return {
 {pause exec-at-unpause}
 ```slip-script
 return execTCycler2.animateSteps(89, 25, 2);
-```
+``` -->
+
+{pause #tcyclers-bigger up-at-unpause}
+### Translated Cyclers can get bigger
+
+{.diagram-and-bullets}
+> ![A complex translated cycler with a large translation pattern](TC_1RB0LE_1LC0RD_---1LD_1RE0LA_1LA0RE.png)
+>
+> - 10,000-step space-time diagram 
+> - Behaviour starts after about 1000 steps
+> - Period is about 600 steps
+
+{pause}
+
+{.informal}
+It can get a [LOT]{.emph}  worse {pause up-at-unpause=tcyclers-bigger}
+
+
+
 
 <style>
 .author {
@@ -501,6 +519,10 @@ return execTCycler2.animateSteps(89, 25, 2);
     font-size: 32pt;
 }
 
+.emph {
+    font-size: 38pt;
+}
+
 .red {
     color: red;
 }
@@ -531,6 +553,12 @@ return execTCycler2.animateSteps(89, 25, 2);
     display: grid;
     grid-template-columns: 1fr 1fr;
     text-align: center;
+}
+
+.diagram-and-bullets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    text-align: left;
 }
 
 .stamp {
