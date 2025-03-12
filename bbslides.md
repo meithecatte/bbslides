@@ -570,7 +570,6 @@ ul {
 
 .active-tx {
     border: 2px solid white !important;
-    background: #001748;
 }
 
 .tnf-row {
