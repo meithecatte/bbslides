@@ -574,15 +574,14 @@ return {
 
 {pause exec-at-unpause up-at-unpause=section-cps}
 ```slip-script
-cpsTape2 = inertTape('#cps-tape2', 'A', cpsTapeExampleContents.slice(6));
-document.querySelector('#cps-tape2 .tape-head').remove();
+cpsTape2 = inertTape('#cps-tape2', 'A', cpsTapeExampleContents.slice(7), 0);
 return cpsTape2;
 ```
 
 {pause exec-at-unpause}
 ```slip-script
 const n = 3;
-const tapeSize = 9;
+const tapeSize = 8;
 const container = document.querySelector('#cps-tape2');
 const origTape = document.querySelector('#cps-tape2 .tape-outer');
 function mkTapeSnippet(position) {
@@ -590,8 +589,11 @@ function mkTapeSnippet(position) {
     container.append(snippet);
 
     const inner = snippet.querySelector('.tape');
+    // we start at -1 to adjust for the tape head being an element
+    // that we happen to remove here. this is dirty on multiple accounts
+    // but it works so I'm not reworking it
+    let marginR = -1;
     // bleh, I don't know a better API off-hand
-    let marginR = 0;
     while (position + n < inner.children.length) {
         inner.removeChild(inner.children[position + n]);
         marginR++;
@@ -601,8 +603,10 @@ function mkTapeSnippet(position) {
         inner.removeChild(inner.children[0]);
     }
 
+    const marginL = position;
+
     snippet.style.marginRight = `${marginR * 2}em`;
-    snippet.style.marginLeft = `${position * 2}em`;
+    snippet.style.marginLeft = `${marginL * 2}em`;
 }
 
 const skip = animate(async function * () {
@@ -1027,11 +1031,11 @@ ul {
     margin-top: 4rem;
 }
 
-#cps-tape2 .tape-outer {
+#cps-tape2 .tape-outer:not(:first-child) {
     padding-top: 0.5rem;
 }
 
 #cps-tape2 {
-    padding-left: 12em;
+    padding-left: 14em;
 }
 </style>
