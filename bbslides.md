@@ -455,10 +455,8 @@ return {
 return execTCycler2.animateSteps(89, 25, 2);
 ``` -->
 
-{pause #tcyclers-bigger up-at-unpause}
+{pause #tcyclers-bigger up-at-unpause exec-at-unpause=draw-bigger-tcycler}
 ### Translated Cyclers can get bigger
-
-
 
 {.diagram-and-bullets}
 > {#tm-big-TC-table}
@@ -468,7 +466,7 @@ return execTCycler2.animateSteps(89, 25, 2);
 > - Behaviour starts after about 1000 steps
 > - Period is about 600 steps
 
-{pause exec-at-unpause}
+{#draw-bigger-tcycler}
 ```slip-script
 return drawTM('#tm-big-TC-table', fromStandard('1RB0LE_1LC0RD_---1LD_1RE0LA_1LA0RE'));
 ```
