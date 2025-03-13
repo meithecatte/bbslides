@@ -916,7 +916,7 @@ return {
 {pause up-at-unpause .side-by-side}
 > ![](skelet1.png) **Skelet #1**: very chaotic, starts cycling after $10^{51}$ steps
 >
-> ![](sk17.png) **Skelet #17**: complex discrete math problem involving counting in Grey code [[Chris Xu, 2024, arXiv:2407.02426]]{.cite}
+> ![](sk17.png) **Skelet #17**: complex discrete math problem involving counting in Gray code [[Chris Xu, 2024, arXiv:2407.02426]]{.cite}
 
 {pause up-at-unpause}
 ## The formal proof
