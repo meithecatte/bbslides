@@ -177,6 +177,19 @@ return drawTM('#winner-tm', fromStandard('1RB1LC_1RC1RB_1RD0LE_1LA1LD_1RZ0LA'));
 
 {pause up-at-unpause}
 
+## Georgi Georgiev's bbfind program
+
+{.has-biopic}
+> {.biopic}
+> ![](skelet-biopic.png) $$Georgi "Skelet" Georgiev$$
+>
+> {.for-biopic}
+> > In 2003, Georgi Georgiev's ([Skelet]{.keyword}) publishes his **bbfind** program: {pause}
+> > 
+> > - solves all 5-state machines except ~150 hard ones {pause}
+> >   - best result since 1989 [[Marxen and Buntrock, 1989]]{.cite}
+> > - ~6000 lines of undocumented [Pascal]{.tech} code {pause}
+
 ## bbchallenge.org: The Busy Beaver Challenge
 
 {.has-biopic}
