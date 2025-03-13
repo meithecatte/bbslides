@@ -26,6 +26,75 @@ bbchallenge.org
 > > {.informal .stamp}
 > > UNCOMPUTABLE {pause up-at-unpause=bang4buck}
 
+{#initial-example-tm}
+
+{#initial-example-tape}
+
+{pause exec-at-unpause}
+```slip-script
+const tm = fromStandard('1RB0LC_1LA0RC_1RA---');
+let x = drawTM('#initial-example-tm', tm);
+initialExec = execTM('#initial-example-tape', tm, '#initial-example-tm');
+return {
+    undo() {
+        x.undo();
+        initialExec.undo();
+    }
+}
+```
+
+{pause exec-at-unpause}
+```slip-script
+return initialExec.executeStep();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return initialExec.executeStep();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return initialExec.executeStep();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return initialExec.executeStep();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return initialExec.executeStep();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return initialExec.executeStep();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return initialExec.executeStep();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return initialExec.executeStep();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return initialExec.executeStep();
+```
+
+{pause exec-at-unpause}
+```slip-script
+return initialExec.executeStep();
+```
+
+{pause}
+
 {#small-values}
 Small busy beaver values:
 <ul>
@@ -79,7 +148,17 @@ Hence, knowing BB(25) is "at least as hard" as solving Goldbach's conjecture.
 {pause reveal-at-unpause=bb5b}
 
 {pause up-at-unpause}
-## TODO: something about what bbchallenge is, I think
+
+## bbchallenge.org: The Busy Beaver Challenge
+
+- Created by [Tristen]{.cosmo} in 2022 during his PhD at Maynooth University
+- Online, asynchronous, almost exclusively communicating on [Discord]{.tech} {pause}
+- No "management": [entropically driven research]{.keyword} {pause}
+- 800+ members on Discord
+- ~50 active contributors
+- ~15 contributors whose contributions were directly used in the Coq proof
+- Galaxy of ~25 GitHub repositories, many languages used:
+  C++, Python, Rust, Go, Haskell, Pascal, Coq, Lean, Dafny
 
 {pause up-at-unpause #proof-outline}
 ## Proof outline
@@ -664,7 +743,7 @@ Original correctness strategy:
   - consensus-based development
 
 {pause #nathan-dafny}
-In $YEAR, Nathan whatshisname TODO wrote formally verified versions of some
+In 2022, Nathan Fenner wrote formally verified versions of some
 of the deciders in [Dafny]{.tech}:
 - [F]{.keyword}inite [A]{.keyword}utomata [R]{.keyword}eduction
 - Halting Segment (since obsoleted by other work)
@@ -1037,5 +1116,6 @@ ul {
 
 #cps-tape2 {
     padding-left: 14em;
+    height: calc((2em + 3rem) * 6);
 }
 </style>
