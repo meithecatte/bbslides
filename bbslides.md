@@ -95,19 +95,26 @@ return initialExec.executeStep();
 
 {pause}
 
-{#small-values}
-Small busy beaver values:
-<ul>
-<li>BB(1) = 1, BB(2) = 6 <span class="cite-list">[Radó, 1962]</span></li>
-<li>BB(3) = 21           <span class="cite-list">[Radó and Lin, 1963]</span></li>
-<li>BB(4) = 107          <span class="cite-list">[Brady, 1983]</span></li>
-<li id="bb5a" class="unrevealed">BB(5) &geq; 47,176,870
-    <span class="cite-list">[Marxen and Buntrock, 1989]</span></li>
-<li id="bb5b" class="unrevealed">BB(5) = 47,176,870
-    <span class="cite-list">[bbchallenge, 2024]</span></li>
-</ul>
+{.has-biopic}
+> {.biopic .unrevealed #winner-spacetime}
+> ![](bb5-champion.png) **BB(5) winner**, first 20,000 steps
+>
+> {.for-biopic}
+> {#small-values}
+> > Small busy beaver values:
+> > <ul>
+> > <li>BB(1) = 1, BB(2) = 6 <span class="cite-list">[Radó, 1962]</span></li>
+> > <li>BB(3) = 21           <span class="cite-list">[Radó and Lin, 1963]</span></li>
+> > <li>BB(4) = 107          <span class="cite-list">[Brady, 1983]</span></li>
+> > <li id="bb5a" class="unrevealed">BB(5) &geq; 47,176,870
+> >     <span class="cite-list">[Marxen and Buntrock, 1989]</span></li>
+> > <li id="bb5b" class="unrevealed">BB(5) = 47,176,870
+> >     <span class="cite-list">[bbchallenge, 2024]</span></li>
+> > </ul>
+> >
+> > {#winner-tm}
 
-{pause}
+{pause up-at-unpause=initial-example-tm}
 
 {.indent #bb4-explanation}
 > For each 4-state Turing machine, witness that it halts
@@ -141,24 +148,54 @@ There is a 25-state Turing machine that implements the above.
 
 Hence, knowing BB(25) is "at least as hard" as solving Goldbach's conjecture.
 
-{pause center-at-unpause=bb5a}
+{pause}
+
+Other examples:
+
+- Riemann Hypothesis $\rightarrow BB(744)$ [[Matiyassevich and O'Rear, 2016]]{.cite}
+- Consistency of ZF $\rightarrow BB(748)$ [[O'Rear, 2017] [Riebel, 2024]]{.cite}
+
+{pause center-at-unpause=bb5a exec-at-unpause}
+```slip-script
+const stale = document.querySelector('#bb4-explanation');
+stale.style.opacity = 0;
+return {
+    undo() {
+        stale.style.opacity = 1;
+    }
+}
+```
 
 {pause reveal-at-unpause=bb5a}
 
 {pause reveal-at-unpause=bb5b}
 
+{pause reveal-at-unpause=winner-spacetime exec-at-unpause}
+```slip-script
+return drawTM('#winner-tm', fromStandard('1RB1LC_1RC1RB_1RD0LE_1LA1LD_1RZ0LA'));
+```
+
 {pause up-at-unpause}
 
 ## bbchallenge.org: The Busy Beaver Challenge
 
-- Created by [Tristen]{.cosmo} in 2022 during his PhD at Maynooth University
-- Online, asynchronous, almost exclusively communicating on [Discord]{.tech} {pause}
-- No "management": [entropically driven research]{.keyword} {pause}
-- 800+ members on Discord
-- ~50 active contributors
-- ~15 contributors whose contributions were directly used in the Coq proof
-- Galaxy of ~25 GitHub repositories, many languages used:
-  C++, Python, Rust, Go, Haskell, Pascal, Coq, Lean, Dafny
+{.has-biopic}
+> {.biopic}
+> <img src="bbchallenge_logo.svg">
+>
+> {.for-biopic}
+> > - Created by [Tristan]{.cosmo} in 2022
+> > - Online, asynchronous, almost exclusively communicating on [Discord]{.tech} {pause}
+> > - No "management": [entropically driven research]{.keyword} {pause}
+> >   - Even the formal proof happened through a grassroots initiative {pause}
+> > - 800+ members on Discord
+> > - ~50 active contributors
+> > - ~15 contributors whose contributions were directly used in the Coq proof
+> > - Galaxy of ~25 GitHub repositories, many languages used:
+> >   C++, Python, Rust, Go, Haskell, Pascal, Coq, Lean, Dafny
+
+{pause down-at-unpause}
+![](credits.png)
 
 {pause up-at-unpause #proof-outline}
 ## Proof outline
@@ -188,6 +225,12 @@ return {undo: () => elem.innerText = oldText};
 > [UNKNOWN]{.verdict .red} {pause}
 > $\Downarrow$  
 > try another decider {pause}
+
+```math
+\forall \mathrm{tm}. \mathrm{decider}(\mathrm{tm}) = \mathtt{NONHALT} \Longrightarrow \text{tm doesn't halt}
+```
+
+{pause}
 
 ### 3. Manually inspect what's left {pause}
 
@@ -399,20 +442,40 @@ Rinse & repeat&trade; {pause up-at-unpause=tnf-row2}
 
 {pause up-at-unpause=unreasonably-effective}
 
+{#deciding-undecidable}
 ## 2. Deciding the undecidable: a quick tutorial
 
 {.informal .green}
-This is impossible! Let's do it anyway. {pause}
+This is impossible! Let's do it anyway.
+
+{pause up-at-unpause=deciding-undecidable}
+
+<!--
+{.mdtable}
+| Decider                            | Nonhalt     | Halt       | Total       |
+| -----------------------------------| ----------- | ---------- | ----------- |
+| Loops                              | 126,994,099 | 48,379,711 | 175,373,810 |
+| n-gram Closed Position Set         | 6,005,142   |            | 6,005,142   |
+| Repeated Word List                 | 6,577       |            | 6,577       |
+| Halt Max (47,176,870 steps)        | 0           | 183        | 183         |
+| Finite Automata Reduction          | 23          |            | 23          |
+| Weighted Finite Automata Reduction | 17          |            | 17          |
+| Sporadic Machines                  | 13          |            | 13          |
+| 1RB reduction ([see below](#table_based-and-normal_form_table_based))                 | 14          |            | 14          |
+| Total                              | 133,005,895 | 48,379,894 | 181,385,789 |
+-->
+
+![](decider-table.png) {pause}
 
 {#idea-cyclers}
-### First idea: there's gotta be *some* TMs that just enter a cycle
+### Simplest idea: there's gotta be *some* TMs that just enter a cycle
 
 {.tm-and-spacetime}
 > {#tm-cycler}
 >
 > {#exec-cycler .with-history}
 
-{pause exec-at-unpause}
+{pause exec-at-unpause up-at-unpause=idea-cyclers}
 ```slip-script
 const tm = fromStandard("1RB0RB_1LC1RC_0LD0LD_1RE1LA_1RD---");
 
@@ -486,15 +549,16 @@ return execCycler.animateSteps(29, 25);
 {.tm-and-spacetime}
 > {#tm-tcycler}
 >
-> {#exec-tcycler .with-history .shrink .shrink2}
+> {#exec-tcycler .with-history .shrink}
 
 {#run-tcycler}
 ```slip-script
-const tm = fromStandard("1RB0LE_1LC1LA_1LD1LB_1RB---_0RE1RB");
+//const tm = fromStandard("1RB0LE_1LC1LA_1LD1LB_1RB---_0RE1RB");
+const tm = fromStandard("1RB---_1LB1LC_0RD0RC_1LE1RE_1LA0LE");
 
 const drawit = drawTM('#tm-tcycler', tm);
 execTCycler = execTM('#exec-tcycler', tm, '#tm-tcycler');
-execTCycler.setHighlightRule((i, n) => i % 25 == 1);
+execTCycler.setHighlightRule((i, n) => i >= 13 && i % 8 == 5);
 
 return {
     undo() {
@@ -506,26 +570,26 @@ return {
 
 {pause exec-at-unpause}
 ```slip-script
-return execTCycler.animateSteps(59, 25, 2);
+return execTCycler.animateSteps(29 + 13, 25);
 ```
 
-<!-- {pause #tcyclers-however up-at-unpause exec-at-unpause=run-tcycler2}
+{pause #tcyclers-however up-at-unpause exec-at-unpause=run-tcycler2}
 ### However, the tape left behind isn't always clean
-
-TODO: better example here?
 
 {.tm-and-spacetime}
 > {#tm-tcycler2}
 >
-> {#exec-tcycler2 .with-history .shrink .shrink3}
+> {#exec-tcycler2 .with-history .shrink .shrink2}
 
 {#run-tcycler2}
 ```slip-script
-const tm = fromStandard("1RB---_0RC0LB_1RD0RE_1LE1RD_1LC1LB");
+//const tm = fromStandard("1RB---_0RC0LB_1RD0RE_1LE1RD_1LC1LB");
+//const tm = fromStandard("1RB0RE_1LC---_1RE0RD_0RA1LD_1LB0RE");
+const tm = fromStandard("1RB0LB_1LA1LC_0LE1RD_---0RB_0LA1LB");
 
 const drawit = drawTM('#tm-tcycler2', tm);
 execTCycler2 = execTM('#exec-tcycler2', tm, '#tm-tcycler2');
-execTCycler2.setHighlightRule((i, n) => i % 29 == 10);
+execTCycler2.setHighlightRule((i, n) => i % 19 == 0);
 
 return {
     undo() {
@@ -537,19 +601,41 @@ return {
 
 {pause exec-at-unpause}
 ```slip-script
-return execTCycler2.animateSteps(89, 25, 2);
-``` -->
+return execTCycler2.animateSteps(60, 25);
+```
+
+{pause up-at-unpause}
+### Translated Cyclers
+
+{pause}
+
+- This decider was first used for BB(3) [[Radó and Lin, 1963]]{.cite}
+  - originally known as [Lin recurrence]{.keyword} {pause}
+- However, we can do better:
+
+{.theorem title="deciding loops by ear"}
+> Consider the sequence of (current state, symbol under head) pairs the machine
+> visits during its execution. Two repetitions in this sequence are enough
+> to declare this machine a (translated) cycler.
+>
+> *Side conditions apply. Not a legally binding algorithm description. Consult
+> a mathematician before use.*
+
+<!-- TODO visualize this maybe -->
 
 {pause #tcyclers-bigger up-at-unpause exec-at-unpause=draw-bigger-tcycler}
 ### Translated Cyclers can get bigger
 
-{.diagram-and-bullets}
-> {#tm-big-TC-table}
->  ![A complex translated cycler with a large translation pattern](TC_1RB0LE_1LC0RD_---1LD_1RE0LA_1LA0RE.png) 
+{.has-biopic .bigger-biopic}
+> {.biopic}
+> ![A complex translated cycler with a large translation pattern](TC_1RB0LE_1LC0RD_---1LD_1RE0LA_1LA0RE.png) 
 > 
-> - 10,000-step space-time diagram 
-> - Behaviour starts after about 1000 steps
-> - Period is about 600 steps
+> {.for-biopic}
+> > {#tm-big-TC-table}
+> >
+> > - 10,000-step space-time diagram 
+> > - Behaviour starts after about 1000 steps
+> > - Period is about 600 steps
 
 {#draw-bigger-tcycler}
 ```slip-script
@@ -559,7 +645,7 @@ return drawTM('#tm-big-TC-table', fromStandard('1RB0LE_1LC0RD_---1LD_1RE0LA_1LA0
 {pause}
 
 {.informal}
-They can get a [LOT]{.emph}  worse {pause up-at-unpause=tcyclers-bigger}
+They can get a [LOT]{.emph} worse
 
 {pause #skelet-tcycler up-at-unpause}
 ## Skelet #1, a ginormous Translated Cycler
@@ -574,23 +660,28 @@ They can get a [LOT]{.emph}  worse {pause up-at-unpause=tcyclers-bigger}
 > - One of the most complex 5-state TMs
 
 {pause up-at-unpause}
-### TODO: execution transcript based decider
-### TODO: Perhaps a slide on the statistics of how common Cyclers/TCs are
 
-Outside of [Cyclers]{.keyword}, we can't hope to keep tracking the tape exactly
+Outside of [Cyclers]{.keyword}, there are two strategies: {pause}
 
-{pause}
-
-#### Idea: soundly approximate it in some way. Abstract interpretation.
+{.has-biopic}
+> {.biopic}
+> ![](canonical-bouncer.png)
+> Example of a **Bouncer**, one such concrete class
+>
+> {.for-biopic}
+> > 1. choose a specific class of machines, tailor a decider to recognize them
+> >   {pause}
+> > 2. generic methods that attempt to approximate the behavior in some way
+> >   ([abstract interpretation]{.keyword})
 
 {pause exec-at-unpause}
 ```slip-script
-cpsTapeExampleContents = [0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0];
+cpsTapeExampleContents = [0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1];
 return cpsTape = inertTape('#cps-tape', 'A', cpsTapeExampleContents);
 ```
 
 {#section-cps}
-## [$n$-gram]{.keyword} [C]{.keyword}losed [P]{.keyword}osition [S]{.keyword}et {pause}
+## [$n$-gram]{.keyword} [C]{.keyword}losed [P]{.keyword}osition [S]{.keyword}et {pause up-at-unpause}
 
 {#cps-tape .extra-border .wide}
 
@@ -715,32 +806,109 @@ return {
 }
 ```
 
-{pause}
+{pause exec-at-unpause}
+```slip-script
+const cell1 = document.querySelector('#cps-tape .tape-cell:nth-child(12)');
+const cell2 = document.querySelector('#cps-tape .tape-cell:nth-child(5)');
+
+cell1.classList.remove('mystery');
+cell1.classList.remove('cps-masked');
+cell2.classList.add('cps-masked');
+
+return {
+    undo() {
+        cell1.classList.add('mystery');
+        cell1.classList.add('cps-masked');
+        cell2.classList.remove('cps-masked');
+    }
+}
+```
+
+{pause exec-at-unpause}
+```slip-script
+cpsTape.setPosition(9);
+cpsTape.enterState('C');
+return {
+    undo() {
+        cpsTape.setPosition(8);
+        cpsTape.enterState('B');
+    }
+}
+```
+
+{pause exec-at-unpause}
+```slip-script
+const cell = document.querySelector('#cps-tape .tape-cell:nth-child(13)');
+
+cell.classList.add('mystery');
+
+return {
+    undo() {
+        cell.classList.remove('mystery');
+    }
+}
+```
+
+{pause up-at-unpause}
+## Machines decided by [$n$-gram CPS]{.keyword}
+
+{.side-by-side}
+> ![](fractal.png)
+>
+> ![](ngramcps-counter.png)
 
 <!-- TODO: highlight the part of the tape being left alone, label $n = 3$ -->
 
-## TODO: CPS? RepWL? CTL/FAR
+{pause up-at-unpause}
+## So, where are we at?
+![](decider-table-regular.png)
 
-## 3. What are the holdouts like?
+<!--
+{pause up-at-unpause}
+## General framework: Closed Tape Languages
 
-- could talk about bbfind and Skelet here
-- Skelet #10 is a nice small thing
-- Skelet #1
-- Skelet #17
-- don't need that much detail, should take 1-2min of presentation time tops
+- $
+-->
+
+{pause up-at-unpause}
+## 3. What are the holdouts like? {pause}
+
+{.has-biopic}
+> {.biopic}
+> ![](sk10.png) **Skelet #10**: counts in base Fibonacci on two sides of the tape, halts if the two counters are out of sync
+>
+> {.for-biopic}
+> > {.theorem title="counting in base Fibonacci"}
+> > > All natural numbers can be expressed as a sum of [Fibonacci numbers]{.keyword}
+> > > in exactly
+> > > one way, if you forbid using numbers immediately adjacent in the Fibonacci
+> > > sequence. {pause}
+> > >
+> > > ```math
+> > > 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144
+> > > ```
+> > >
+> > > ```math
+> > > 17 = 1 + 3 + 13
+> > > ```
+
+{pause up-at-unpause .side-by-side}
+> ![](skelet1.png) **Skelet #1**: very chaotic, starts cycling after $10^{51}$ steps
+>
+> ![](sk17.png) **Skelet #17**: complex discrete math problem involving counting in Grey code [[Chris Xu, 2024, arXiv:2407.02426]]{.cite}
 
 {pause up-at-unpause}
 ## The formal proof
 
-For the first N years of bbchallenge, no formal verification people were participating. {pause}
+Initially, formal verification was considered too ambitious and out of scope. {pause}
 
 Original correctness strategy:
-  - modular pipeline with very loose interlinking
+  - independent, interoperable implementations of each component
+  - consensus-based development
+  - modular pipeline with very loose interlinking {pause}
     - in place of the [decider]{.keyword} pipeline, the [TNF enumeration]{.keyword} used a very simple criterion:
       - if it halts within 47,176,870, then it halts
       - otherwise, mark it as undecided
-  - independent, interoperable implementations of each component
-  - consensus-based development
 
 {pause #nathan-dafny}
 In 2022, Nathan Fenner wrote formally verified versions of some
@@ -757,10 +925,10 @@ In 2023, [mei]{.mei} joins the project. {pause}
 - previous experience: small stuff in [Isabelle/HOL]{.tech} {pause}
 - read Adam Chlipala's **Certified Programming with Dependent Types** and forgot most of it {pause}
 - learned [Coq]{.tech} through **Software Foundations** {pause}
-- found bbchallenge through OEIS immediately afterwards {pause}
+- found bbchallenge through OEIS immediately afterwards
 
-{pause up-at-unpause=enter-mei-stage-left}
-
+{pause up-at-unpause}
+![](ugly-coqbb5.png)
 
 
 <style>
@@ -804,6 +972,10 @@ img {
     display: grid;
     gap: 3rem;
     grid-template-columns: 2fr 1fr;
+}
+
+.bigger-biopic {
+    grid-template-columns: 1fr 1fr;
 }
 
 .cite, .cite-list {
@@ -1116,6 +1288,25 @@ ul {
 
 #cps-tape2 {
     padding-left: 14em;
-    height: calc((2em + 3rem) * 6);
+    height: calc((2em + 3rem) * 5 + 1rem);
+}
+
+.mdtable {
+    gap: 0;
+}
+
+.mdtable td {
+    border: 1px solid black;
+}
+
+.theorem {
+    font-style: inherit;
+}
+
+.side-by-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    text-align: center;
 }
 </style>
