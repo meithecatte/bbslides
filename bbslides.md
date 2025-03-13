@@ -168,8 +168,6 @@ return {
 
 {pause reveal-at-unpause=bb5a}
 
-{pause reveal-at-unpause=bb5b}
-
 {pause reveal-at-unpause=winner-spacetime exec-at-unpause}
 ```slip-script
 return drawTM('#winner-tm', fromStandard('1RB1LC_1RC1RB_1RD0LE_1LA1LD_1RZ0LA'));
@@ -181,7 +179,7 @@ return drawTM('#winner-tm', fromStandard('1RB1LC_1RC1RB_1RD0LE_1LA1LD_1RZ0LA'));
 
 {.has-biopic}
 > {.biopic}
-> ![](skelet-biopic.png) $$Georgi "Skelet" Georgiev$$
+> ![](skelet-biopic.png) **Georgi "Skelet" Georgiev**
 >
 > {.for-biopic}
 > > In 2003, Georgi Georgiev's ([Skelet]{.keyword}) publishes his **bbfind** program: {pause}
@@ -189,7 +187,17 @@ return drawTM('#winner-tm', fromStandard('1RB1LC_1RC1RB_1RD0LE_1LA1LD_1RZ0LA'));
 > > - solves all 5-state machines except ~150 hard ones {pause}
 > >   - best result since 1989 [[Marxen and Buntrock, 1989]]{.cite}
 > > - ~6000 lines of undocumented [Pascal]{.tech} code {pause}
+> >   - concerns about correctness {pause}
+> > - Note: failed to find a better machine {pause}
+> >
+> > In 2020, Scott Aaronson conjectured that there is **no better machine**:
+> > Marxen and Buntrock's machine is the **BB(5) winner**.
 
+{pause center-at-unpause=bb5a}
+
+{pause reveal-at-unpause=bb5b}
+
+{pause up-at-unpause}
 ## bbchallenge.org: The Busy Beaver Challenge
 
 {.has-biopic}
