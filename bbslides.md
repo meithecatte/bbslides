@@ -5,6 +5,16 @@
 Tristan Stérin, Maja Kądziołka  
 bbchallenge.org
 
+Notes for those viewing the slides online:
+- a recording of this talk is [available on YouTube][recording]
+  - in particular, some explanations rely on things being drawn live, with spoken commentary
+- due to time constraints, the ending section of the presentation was given based on pre-existing Google Slides, and as such isn't included here
+- during testing, we have noticed that having the Bitwarden extension installed
+  makes things choppy, at least on Firefox
+  - if you have it installed, consider using a private tab or a different browser profile
+
+[recording]: https://www.youtube.com/watch?v=5X6YVEnbLZU
+
 {pause up-at-unpause}
 ## The busy beaver function
 
@@ -677,6 +687,8 @@ They can get a [LOT]{.emph} worse
 > - One of the most complex 5-state TMs
 
 {pause up-at-unpause}
+
+## More deciders
 
 Outside of [Cyclers]{.keyword}, there are two strategies: {pause}
 
