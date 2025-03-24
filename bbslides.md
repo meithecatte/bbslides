@@ -8,7 +8,6 @@ bbchallenge.org
 Notes for those viewing the slides online:
 - a recording of this talk is [available on YouTube][recording]
   - in particular, some explanations rely on things being drawn live, with spoken commentary
-- due to time constraints, the ending section of the presentation was given based on pre-existing Google Slides, and as such isn't included here
 - during testing, we have noticed that having the Bitwarden extension installed
   makes things choppy, at least on Firefox
   - if you have it installed, consider using a private tab or a different browser profile
@@ -959,6 +958,11 @@ In 2023, [mei]{.mei} joins the project. {pause}
 {pause up-at-unpause}
 ![](ugly-coqbb5.png)
 
+{pause}
+
+Note: due to time constraints, the rest of the talk was given using preexisting slides outside of slipshow.
+
+See [continuation on Google Slides $\Longrightarrow$](https://docs.google.com/presentation/d/1oqZgCoY5fGQIvAGt_4Ou0UOzhTeGcXvZDqnmajG_YMQ/edit?usp=sharing)
 
 <style>
 .author {
