@@ -112,13 +112,14 @@ return initialExec.executeStep();
 > >     <span class="cite-list">[bbchallenge, 2024]</span></li>
 > > </ul>
 > >
-> > {#winner-tm}
-
-{pause up-at-unpause=initial-example-tm}
-
-{.indent #bb4-explanation}
-> For each 4-state Turing machine, witness that it halts
-> within 107 steps, or __prove it never halts__ {pause} (which can be hard{.red} in general)
+> > {pause up-at-unpause=initial-example-tm}
+> >
+> > {.switch-space}
+> > > {#bb4-explanation}
+> > > > For each 4-state Turing machine, witness that it halts
+> > > > within 107 steps, or __prove it never halts__ {pause} (which can be hard{.red} in general)
+> > >
+> > > {#winner-tm}
 
 {pause up-at-unpause=small-values #hardness}
 ## Mathematical hardness of busy beaver values
@@ -158,12 +159,7 @@ Other examples:
 {pause center-at-unpause=bb5a exec-at-unpause}
 ```slip-script
 const stale = document.querySelector('#bb4-explanation');
-stale.style.opacity = 0;
-return {
-    undo() {
-        stale.style.opacity = 1;
-    }
-}
+slip.set_style(stale, 'opacity', 0);
 ```
 
 {pause reveal-at-unpause=bb5a}
@@ -1329,5 +1325,20 @@ ul {
     grid-template-columns: 1fr 1fr;
     gap: 3rem;
     text-align: center;
+}
+
+#bb4-explanation {
+    border: 4px dashed orange;
+    padding: 0 30px;
+}
+
+.switch-space {
+    position: relative;
+    height: 20rem;
+}
+
+.switch-space > * {
+    position: absolute;
+    width: 100%;
 }
 </style>
